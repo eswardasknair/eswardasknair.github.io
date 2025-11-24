@@ -6,38 +6,29 @@
     <title>Eswardas K Nair | Python Backend Engineer</title>
     <meta name="description" content="Portfolio of Eswardas K Nair - Python, Django, SQL & Backend Development">
     
+    <!-- Google Fonts: JetBrains Mono (Code) & Inter (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', // We are switching to light mode primarily
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        bg: '#F8FAFC',       /* Slate 50 */
-                        surface: '#FFFFFF',  /* Pure White */
-                        primary: '#0EA5E9',  /* Sky 500 */
-                        secondary: '#64748B',/* Slate 500 */
-                        text: '#0F172A',     /* Slate 900 */
-                        accent: '#F59E0B',   /* Amber 500 (Heat color) */
+                        primary: '#3B82F6',
+                        secondary: '#64748B',
+                        accent: '#10B981',
+                        light: '#F8FAFC',
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 8s ease-in-out infinite 2s',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        }
                     }
                 }
             }
@@ -46,439 +37,570 @@
     
     <style>
         body { 
-            background-color: #F8FAFC; 
-            color: #0F172A; 
+            background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 50%, #DBEAFE 100%);
+            color: #1E293B; 
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #94A3B8; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748B; }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(to right, #3B82F6, #8B5CF6, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shimmer 3s linear infinite;
+        }
+        
+        @keyframes shimmer {
+            to { background-position: 200% center; }
         }
 
-        /* CANVAS LAYER FOR MOUSE EFFECTS */
-        #effects-canvas {
+        /* Floating Background Objects */
+        .floating-shape {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            top: 10%;
+            left: -100px;
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #EC4899, #F59E0B);
+            top: 60%;
+            right: -50px;
+            animation: float2 15s ease-in-out infinite;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #10B981, #3B82F6);
+            bottom: 10%;
+            left: 30%;
+            animation: float3 18s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(100px, -100px) rotate(120deg); }
+            66% { transform: translate(-50px, 50px) rotate(240deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-150px, 100px) rotate(180deg); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(100px, -50px) scale(1.2); }
+        }
+
+        /* Particle Animation */
+        .particle {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes particleFloat {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Heat Trail Effect Canvas */
+        #heatCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Allows clicking through the canvas */
+            pointer-events: none;
             z-index: 9999;
-            mix-blend-mode: multiply; /* Blends heat into the white background */
         }
 
-        /* FLOATING BACKGROUND SHAPES */
-        .blob {
-            position: absolute;
+        /* Smoke Particles */
+        .smoke-particle {
+            position: fixed;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            filter: blur(80px);
-            z-index: -1;
-            opacity: 0.6;
-        }
-        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #E0F2FE; animation: float 10s infinite; }
-        .blob-2 { bottom: 10%; right: -5%; width: 400px; height: 400px; background: #FEF3C7; animation: float-delayed 12s infinite; }
-
-        /* SCROLL ANIMATION CLASSES */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+            background: radial-gradient(circle, rgba(100, 116, 139, 0.4), transparent);
+            pointer-events: none;
+            z-index: 9998;
+            animation: smokeRise 2s ease-out forwards;
         }
 
-        /* LEETCODE CROP MAGIC */
-        .leetcode-wrapper {
-            width: 100%;
-            height: 160px;
-            overflow: hidden;
+        @keyframes smokeRise {
+            to {
+                transform: translateY(-100px) scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Glowing Cards */
+        .glow-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .glow-card:hover {
+            box-shadow: 0 12px 48px rgba(59, 130, 246, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Animated Border */
+        .animated-border {
             position: relative;
-            border-radius: 0.75rem;
-        }
-        .leetcode-wrapper img {
-            /* This zooms into the image and shifts it left to show only the end (recent weeks) */
-            position: absolute;
-            right: 0;
-            height: 100%;
-            max-width: none; /* Allow image to overflow */
-            width: 350%; /* Zoom factor */
-            object-fit: cover;
-            object-position: 100% center; /* Focus on right side */
+            overflow: hidden;
         }
 
-        /* BUTTON GLOW */
-        .btn-glow:hover {
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+        .animated-border::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(45deg, #3B82F6, #8B5CF6, #EC4899, #F59E0B);
+            background-size: 300% 300%;
+            animation: gradientRotate 4s ease infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        @keyframes gradientRotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Pulse Animation */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .pulse-avatar::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 3px solid #3B82F6;
+            animation: pulse-ring 2s ease-out infinite;
+        }
+
+        /* Contact Buttons */
+        .contact-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .contact-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Skill Pills with Animation */
+        .skill-pill {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-pill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .skill-pill:hover::after {
+            left: 100%;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-accent selection:text-white">
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
 
-    <canvas id="effects-canvas"></canvas>
+    <!-- Heat Trail Canvas -->
+    <canvas id="heatCanvas"></canvas>
 
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
 
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 transition-all duration-300">
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-blue-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="#" class="font-mono font-bold text-xl tracking-tighter text-primary hover:scale-105 transition-transform">&lt;Eswardas_K /&gt;</a>
-            <div class="flex gap-6 text-sm font-semibold text-secondary">
-                <a href="#stats" class="hover:text-primary transition hidden sm:block">Stats</a>
-                <a href="#skills" class="hover:text-primary transition hidden sm:block">Skills</a>
-                <a href="#projects" class="hover:text-primary transition hidden sm:block">Projects</a>
-                <a href="resume.pdf" target="_blank" class="text-white bg-primary px-5 py-2 rounded-full hover:bg-sky-600 transition shadow-lg btn-glow">Resume</a>
+            <a href="#" class="font-mono font-bold text-lg tracking-tighter text-blue-600 hover:text-blue-800 transition">&lt;Eswardas_K /&gt;</a>
+            <div class="flex gap-6 text-sm font-medium text-gray-700">
+                <a href="#stats" class="hover:text-blue-600 transition hidden sm:block">Stats</a>
+                <a href="#skills" class="hover:text-blue-600 transition hidden sm:block">Skills</a>
+                <a href="#projects" class="hover:text-blue-600 transition hidden sm:block">Projects</a>
+                <a href="#contact" class="hover:text-blue-600 transition hidden sm:block">Contact</a>
+                <a href="resume.pdf" target="_blank" class="text-blue-600 border border-blue-600 px-4 py-1.5 rounded hover:bg-blue-600 hover:text-white transition font-mono text-xs">RESUME.pdf</a>
             </div>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative">
-        <div class="max-w-4xl mx-auto text-center z-10">
-            <div class="relative inline-block mb-8 reveal group">
-                <div class="absolute inset-0 bg-gradient-to-tr from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
-                <img id="gh-avatar" src="" alt="Profile" class="relative w-36 h-36 rounded-full border-4 border-white shadow-2xl object-cover">
-                <div class="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-4 border-white animate-pulse" title="Open to Work"></div>
+    <!-- Hero Section -->
+    <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Dynamic Avatar with Pulse -->
+            <div class="relative inline-block mb-6 pulse-avatar">
+                <img id="gh-avatar" src="" alt="Profile" class="w-32 h-32 rounded-full border-4 border-blue-400 shadow-2xl">
+                <div class="absolute bottom-0 right-0 w-8 h-8 bg-green-500 rounded-full border-4 border-white animate-pulse" title="Open to Work">
+                    <span class="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75"></span>
+                </div>
             </div>
             
-            <p class="text-primary font-mono font-bold mb-4 tracking-wider reveal">HELLO, I AM</p>
-            <h1 class="text-5xl md:text-8xl font-extrabold tracking-tight mb-6 text-text reveal">
-                Eswardas K Nair<span class="text-primary">.</span>
+            <p class="text-blue-600 font-mono mb-4 text-lg animate-pulse">Hello, I am</p>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 gradient-text">
+                Eswardas K Nair
             </h1>
-            <h2 class="text-xl md:text-3xl text-secondary font-medium mb-10 max-w-3xl mx-auto leading-relaxed reveal">
-                Backend Engineer crafting <span class="text-primary underline decoration-2 decoration-primary/30 underline-offset-4">Scalable Architecture</span> with Django. 
-                <br>I turn complex data into lightning-fast APIs.
+            <h2 class="text-xl md:text-2xl text-gray-600 font-light mb-8 max-w-2xl mx-auto">
+                Backend Engineer specializing in <span class="text-gray-900 font-semibold">Django & Scalable Architecture</span>. 
+                I transform complex data into optimized API responses.
             </h2>
             
-            <div class="flex justify-center gap-6 mb-12 reveal">
-                <a href="tel:6282393871" class="group relative flex items-center gap-3 px-8 py-4 bg-white rounded-2xl shadow-lg border border-slate-100 hover:border-primary/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                    <div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition"><i class="fas fa-phone-alt"></i></div>
-                    <span class="font-bold text-slate-700 z-10">Call Me</span>
-                </a>
-                
-                <a href="mailto:esdkncc@gmail.com" class="group relative flex items-center gap-3 px-8 py-4 bg-white rounded-2xl shadow-lg border border-slate-100 hover:border-red-400/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                    <div class="absolute inset-0 bg-red-50 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500 group-hover:scale-110 transition"><i class="fas fa-envelope"></i></div>
-                    <span class="font-bold text-slate-700 z-10">Email Me</span>
-                </a>
+            <!-- Social Links -->
+            <div class="flex justify-center gap-8 text-3xl mb-12">
+                <a href="https://github.com/eswardasknair" target="_blank" class="text-gray-700 hover:text-gray-900 hover:scale-125 transition transform"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="text-blue-600 hover:text-blue-700 hover:scale-125 transition transform"><i class="fab fa-linkedin"></i></a>
+                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="text-yellow-600 hover:text-yellow-700 hover:scale-125 transition transform"><i class="fas fa-code"></i></a>
+                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-green-600 hover:text-green-700 hover:scale-125 transition transform"><i class="fab fa-hackerrank"></i></a>
             </div>
 
-            <div class="flex justify-center gap-8 text-2xl text-slate-400 reveal">
-                <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-slate-900 hover:scale-110 transition"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-600 hover:scale-110 transition"><i class="fab fa-linkedin"></i></a>
-                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="hover:text-yellow-500 hover:scale-110 transition"><i class="fas fa-code"></i></a>
-                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="hover:text-green-600 hover:scale-110 transition"><i class="fab fa-hackerrank"></i></a>
+            <!-- Contact Buttons -->
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="tel:6282393871" class="contact-btn relative px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Call Me</span>
+                </a>
+                <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email Me</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <section id="stats" class="py-24 relative z-10">
+    <!-- Real-Time Stats Dashboard -->
+    <section id="stats" class="py-20 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-12 reveal">
-                <i class="fas fa-chart-line text-primary text-2xl"></i>
-                <h2 class="text-3xl font-bold text-text">Live Metrics</h2>
+            <div class="flex items-center gap-3 mb-10">
+                <i class="fas fa-terminal text-blue-600 text-2xl"></i>
+                <h2 class="text-3xl font-bold text-gray-900">Live Metrics</h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition duration-500 group reveal">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center gap-2">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png" class="w-6 opacity-70">
-                            <h3 class="font-bold text-lg text-slate-700">Recent Activity</h3>
-                        </div>
-                        <span class="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">Last 12 Weeks</span>
-                    </div>
-                    
-                    <div class="leetcode-wrapper bg-slate-50 border border-slate-100 rounded-xl">
-                        <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
-                            <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Plus%20Jakarta%20Sans&ext=heatmap" alt="LeetCode Stats">
-                        </a>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- LeetCode Heatmap (12 weeks) -->
+                <div class="glow-card rounded-2xl p-2 animated-border">
+                    <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
+                        <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Inter&ext=activity" alt="LeetCode Stats" class="w-full rounded-xl opacity-90 hover:opacity-100 transition">
+                    </a>
                 </div>
 
-                <div class="bg-white border border-slate-100 rounded-3xl p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition duration-500 relative overflow-hidden group reveal">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-                    
-                    <div class="relative z-10">
+                <!-- HackerRank Enhanced Badge -->
+                <div class="glow-card rounded-2xl p-8 flex flex-col justify-between animated-border">
+                    <div>
                         <div class="flex justify-between items-start mb-6">
-                            <div class="flex items-center gap-4">
-                                <div class="bg-green-100 p-3 rounded-2xl text-green-600">
-                                    <i class="fab fa-hackerrank text-3xl"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-bold text-slate-800 text-xl">HackerRank</h3>
-                                    <p class="text-sm text-secondary font-mono">@24MCA13</p>
-                                </div>
-                            </div>
-                            <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-slate-300 hover:text-green-600 transition"><i class="fas fa-external-link-alt"></i></a>
+                            <h3 class="font-bold text-2xl text-gray-900 flex items-center gap-3">
+                                <i class="fab fa-hackerrank text-green-600 text-3xl"></i> 
+                                HackerRank
+                            </h3>
+                            <span class="text-xs font-mono text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg">24MCA13</span>
                         </div>
-
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100 group-hover:border-green-200 transition">
-                                <span class="text-slate-600 font-medium"><i class="fab fa-python mr-2 text-secondary"></i>Python</span>
-                                <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star mr-1"></i> Gold</span>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200">
+                                <span class="text-gray-700 font-semibold">Python</span>
+                                <span class="text-yellow-600 font-bold flex items-center gap-2">
+                                    <i class="fas fa-star"></i> Gold Badge
+                                </span>
                             </div>
-                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100 group-hover:border-green-200 transition">
-                                <span class="text-slate-600 font-medium"><i class="fas fa-database mr-2 text-secondary"></i>SQL</span>
-                                <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star mr-1"></i> Gold</span>
+                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg border border-yellow-200">
+                                <span class="text-gray-700 font-semibold">SQL</span>
+                                <span class="text-yellow-600 font-bold flex items-center gap-2">
+                                    <i class="fas fa-star"></i> Gold Badge
+                                </span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    </section>
-
-    <section id="skills" class="py-24 px-6 relative bg-white">
-        <div class="absolute inset-0 bg-slate-50/50 skew-y-1 transform origin-top-left z-0"></div>
-        <div class="max-w-6xl mx-auto relative z-10">
-            <div class="flex items-center gap-3 mb-12 reveal">
-                <i class="fas fa-microchip text-primary text-2xl"></i>
-                <h2 class="text-3xl font-bold text-text">Technical Arsenal</h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-                <div class="reveal">
-                    <h3 class="text-secondary font-bold text-xs mb-6 uppercase tracking-widest pl-3 border-l-4 border-primary">Tech Stack</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="skill-pill border-blue-200 text-blue-600 bg-blue-50"><i class="fab fa-python mr-2"></i>Python 3</span>
-                        <span class="skill-pill border-green-200 text-green-600 bg-green-50"><i class="fas fa-layer-group mr-2"></i>Django</span>
-                        <span class="skill-pill border-red-200 text-red-600 bg-red-50"><i class="fas fa-server mr-2"></i>DRF</span>
-                        <span class="skill-pill border-indigo-200 text-indigo-600 bg-indigo-50"><i class="fas fa-database mr-2"></i>PostgreSQL</span>
-                        <span class="skill-pill border-orange-200 text-orange-600 bg-orange-50"><i class="fas fa-database mr-2"></i>MySQL</span>
-                        <span class="skill-pill border-slate-200 text-slate-600 bg-slate-50"><i class="fas fa-code-branch mr-2"></i>Git/GitHub</span>
-                        <span class="skill-pill border-purple-200 text-purple-600 bg-purple-50"><i class="fas fa-brain mr-2"></i>DSA</span>
-                    </div>
-                </div>
-
-                <div class="reveal">
-                    <h3 class="text-secondary font-bold text-xs mb-6 uppercase tracking-widest pl-3 border-l-4 border-accent">Mindset</h3>
-                    <div class="space-y-4">
-                        <div class="skill-row group">
-                            <div class="icon-box bg-yellow-50 text-yellow-500 group-hover:scale-110 transition"><i class="fas fa-bolt"></i></div>
-                            <div>
-                                <h4 class="text-slate-800 font-bold">First-Principles Thinking</h4>
-                                <p class="text-xs text-secondary mt-1">Deconstructing problems to basics.</p>
-                            </div>
-                        </div>
-                        <div class="skill-row group">
-                            <div class="icon-box bg-green-50 text-green-500 group-hover:scale-110 transition"><i class="fas fa-check-double"></i></div>
-                            <div>
-                                <h4 class="text-slate-800 font-bold">End-to-End Ownership</h4>
-                                <p class="text-xs text-secondary mt-1">From schema design to deployment.</p>
-                            </div>
-                        </div>
-                        <div class="skill-row group">
-                            <div class="icon-box bg-blue-50 text-blue-500 group-hover:scale-110 transition"><i class="fas fa-sync-alt"></i></div>
-                            <div>
-                                <h4 class="text-slate-800 font-bold">Rapid Tech Adaptation</h4>
-                                <p class="text-xs text-secondary mt-1">Mastering new tools on the fly.</p>
+                            <div class="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border border-gray-200">
+                                <span class="text-gray-700 font-semibold">Problem Solving</span>
+                                <span class="text-gray-600 font-bold flex items-center gap-2">
+                                    <i class="fas fa-star"></i> Intermediate
+                                </span>
                             </div>
                         </div>
                     </div>
+                    <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="mt-6 text-sm text-blue-600 hover:text-blue-800 hover:underline text-right block font-semibold">
+                        Verify Profile &rarr;
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="projects" class="py-24 px-6 relative z-10">
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
-            <div class="flex justify-between items-end mb-12 reveal">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-project-diagram text-primary text-2xl"></i>
-                    <h2 class="text-3xl font-bold text-text">Featured Projects</h2>
-                </div>
-                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-primary font-bold hover:text-sky-700 transition flex items-center gap-2 group">View All <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></a>
+            <div class="flex items-center gap-3 mb-10">
+                <i class="fas fa-microchip text-blue-600 text-2xl"></i>
+                <h2 class="text-3xl font-bold text-gray-900">Technical Arsenal</h2>
             </div>
 
-            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
-                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
-                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Hard Skills -->
+                <div class="glow-card rounded-2xl p-8">
+                    <h3 class="text-gray-600 font-mono text-sm mb-6 uppercase tracking-widest font-bold">Core Stack</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer">
+                            <i class="fab fa-python mr-2"></i>Python 3
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-green-100 text-green-700 border-2 border-green-300 rounded-xl text-sm font-bold hover:bg-green-200 transition cursor-pointer">
+                            <i class="fas fa-layer-group mr-2"></i>Django
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-red-100 text-red-700 border-2 border-red-300 rounded-xl text-sm font-bold hover:bg-red-200 transition cursor-pointer">
+                            <i class="fas fa-server mr-2"></i>DRF (Rest API)
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer">
+                            <i class="fas fa-database mr-2"></i>PostgreSQL
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-orange-100 text-orange-700 border-2 border-orange-300 rounded-xl text-sm font-bold hover:bg-orange-200 transition cursor-pointer">
+                            <i class="fas fa-database mr-2"></i>MySQL
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-gray-100 text-gray-700 border-2 border-gray-300 rounded-xl text-sm font-bold hover:bg-gray-200 transition cursor-pointer">
+                            <i class="fas fa-code-branch mr-2"></i>Git/GitHub
+                        </span>
+                        <span class="skill-pill px-5 py-3 bg-purple-100 text-purple-700 border-2 border-purple-300 rounded-xl text-sm font-bold hover:bg-purple-200 transition cursor-pointer">
+                            <i class="fas fa-brain mr-2"></i>DSA
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Soft Skills -->
+                <div class="glow-card rounded-2xl p-8">
+                    <h3 class="text-gray-600 font-mono text-sm mb-6 uppercase tracking-widest font-bold">Engineering Mindset</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl hover:shadow-md transition">
+                            <i class="fas fa-bolt text-yellow-600 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="text-gray-900 text-base font-bold">First-Principles Thinking</h4>
+                                <p class="text-sm text-gray-600 mt-1">Deconstructing complex problems to build optimized solutions from scratch.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl hover:shadow-md transition">
+                            <i class="fas fa-check-double text-green-600 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="text-gray-900 text-base font-bold">End-to-End Ownership</h4>
+                                <p class="text-sm text-gray-600 mt-1">Taking full responsibility for features from database schema to API deployment.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl hover:shadow-md transition">
+                            <i class="fas fa-sync-alt text-blue-600 text-xl mt-1"></i>
+                            <div>
+                                <h4 class="text-gray-900 text-base font-bold">Rapid Tech Adaptation</h4>
+                                <p class="text-sm text-gray-600 mt-1">Mastering new libraries and frameworks quickly to meet project requirements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="certifications" class="py-24 px-6 bg-white border-t border-slate-100">
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-project-diagram text-blue-600 text-2xl"></i>
+                        <h2 class="text-3xl font-bold text-gray-900">Featured Projects</h2>
+                    </div>
+                    <p class="text-gray-600 text-sm mt-2">Source code fetched live from GitHub</p>
+                </div>
+                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-mono transition font-bold">
+                    View All &rarr;
+                </a>
+            </div>
+
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Loading State -->
+                <div class="h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl animate-pulse"></div>
+                <div class="h-64 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl animate-pulse"></div>
+                <div class="h-64 bg-gradient-to-br from-pink-100 to-blue-100 rounded-2xl animate-pulse"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section id="certifications" class="py-20 px-6 relative z-10">
         <div class="max-w-4xl mx-auto">
-            <div class="flex items-center gap-3 mb-12 reveal">
-                <i class="fas fa-certificate text-primary text-2xl"></i>
-                <h2 class="text-3xl font-bold text-text">Certifications</h2>
+            <div class="flex items-center gap-3 mb-10">
+                <i class="fas fa-certificate text-blue-600 text-2xl"></i>
+                <h2 class="text-3xl font-bold text-gray-900">Certifications</h2>
             </div>
             
-            <div id="certs-grid" class="grid gap-4"></div>
+            <div class="grid gap-5">
+                <!-- Cert 1 - NEW -->
+                <div class="glow-card rounded-2xl p-6 animated-border">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-gradient-to-br from-green-400 to-green-600 p-4 rounded-2xl text-white shadow-lg">
+                            <i class="fab fa-hackerrank text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-900">HackerRank Certified Software Engineer Intern</h3>
+                            <p class="text-sm text-gray-600 mt-1">HackerRank • Software Engineering Fundamentals</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="glow-card rounded-2xl p-6">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-gradient-to-br from-blue-400 to-indigo-600 p-4 rounded-2xl text-white shadow-lg">
+                            <i class="fas fa-briefcase text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-900">Data Analytics Job Simulation</h3>
+                            <p class="text-sm text-gray-600 mt-1">Deloitte Australia (Forage)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="glow-card rounded-2xl p-6">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-gradient-to-br from-yellow-400 to-orange-600 p-4 rounded-2xl text-white shadow-lg">
+                            <i class="fab fa-python text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-900">Python Back End Development</h3>
+                            <p class="text-sm text-gray-600 mt-1">Besant Technologies • Django & DRF Specialization</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 4 -->
+                <div class="glow-card rounded-2xl p-6">
+                    <div class="flex items-center gap-5">
+                        <div class="bg-gradient-to-br from-purple-400 to-pink-600 p-4 rounded-2xl text-white shadow-lg">
+                            <i class="fas fa-laptop-code text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-gray-900">Python Web Developer</h3>
+                            <p class="text-sm text-gray-600 mt-1">L&T EduTech • Flask & MySQL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
-    <footer class="py-10 text-center bg-slate-50 border-t border-slate-200">
-        <p class="text-slate-500 text-sm font-mono">&copy; <span id="year"></span> Eswardas K Nair. Built for Performance.</p>
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="glow-card rounded-3xl p-12 animated-border">
+                <i class="fas fa-paper-plane text-5xl text-blue-600 mb-6"></i>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4">Let's Build Something Amazing</h2>
+                <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+                    I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+                </p>
+                <div class="flex flex-wrap justify-center gap-5">
+                    <a href="tel:6282393871" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg">
+                        <i class="fas fa-phone-alt text-xl"></i>
+                        <span>Call Now</span>
+                    </a>
+                    <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <span>Send Email</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center border-t border-gray-200 bg-white/50 backdrop-blur-md relative z-10">
+        <p class="text-gray-600 text-sm font-mono">&copy; <span id="year"></span> Eswardas K Nair. Engineered with Precision.</p>
     </footer>
 
-    <style>
-        .skill-pill {
-            @apply px-4 py-2 rounded-lg border text-sm font-semibold hover:-translate-y-1 transition-transform duration-300 cursor-default shadow-sm hover:shadow-md;
-        }
-        .skill-row {
-            @apply flex items-center gap-4 p-4 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-slate-100;
-        }
-        .icon-box {
-            @apply w-12 h-12 rounded-full flex items-center justify-center text-lg;
-        }
-    </style>
-
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // -----------------------------------------------------
-        // 1. COMPLEX PHYSICS ENGINE (HEATMAP + SMOKE)
-        // -----------------------------------------------------
-        const canvas = document.getElementById('effects-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let particles = [];
-        let mouse = { x: -100, y: -100 };
-
-        // Resize Canvas
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        // Track Mouse
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            
-            // Spawn Particles on Move
-            // 1. Heat Particles (Trail)
-            for(let i=0; i<2; i++) {
-                particles.push(new HeatParticle(mouse.x, mouse.y));
-            }
-            // 2. Smoke Particles (Rising)
-            if(Math.random() > 0.5) {
-                particles.push(new SmokeParticle(mouse.x, mouse.y));
-            }
-        });
-
-        // Heat Particle (Red -> Orange -> Yellow -> Fade)
-        class HeatParticle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 20 + 10; // Large blobs
-                this.life = 1.0; // Life starts at 100%
-                this.decay = Math.random() * 0.005 + 0.002; // Very slow decay for lingering effect
-                this.color = '';
-            }
-            
-            update() {
-                this.life -= this.decay;
-                // Determine color based on life
-                if (this.life > 0.7) {
-                    this.color = `rgba(239, 68, 68, ${this.life * 0.2})`; // Red (low opacity)
-                } else if (this.life > 0.4) {
-                    this.color = `rgba(245, 158, 11, ${this.life * 0.2})`; // Orange
-                } else {
-                    this.color = `rgba(252, 211, 77, ${this.life * 0.1})`; // Yellow
-                }
-            }
-            
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
-        }
-
-        // Smoke Particle (Rising Gray)
-        class SmokeParticle {
-            constructor(x, y) {
-                this.x = x + (Math.random() - 0.5) * 10;
-                this.y = y;
-                this.vx = (Math.random() - 0.5) * 1;
-                this.vy = Math.random() * -2 - 1; // Always moves up
-                this.size = Math.random() * 3 + 2;
-                this.life = 1.0;
-                this.decay = 0.02; // Fades faster than heat
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life -= this.decay;
-                this.size += 0.1; // Expands slightly
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                // Dark gray for smoke against white bg
-                ctx.fillStyle = `rgba(100, 116, 139, ${this.life * 0.3})`; 
-                ctx.fill();
-            }
-        }
-
-        // Animation Loop
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                
-                if (particles[i].life <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-
-        // -----------------------------------------------------
-        // 2. SCROLL REVEAL ANIMATION (Motion UI)
-        // -----------------------------------------------------
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-
-        // -----------------------------------------------------
-        // 3. CONTENT LOGIC
-        // -----------------------------------------------------
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // Fetch Avatar
+        // 1. Fetch Avatar
         fetch(`https://api.github.com/users/${username}`)
             .then(res => res.json())
-            .then(data => { if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; });
+            .then(data => { 
+                if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; 
+            });
 
-        // Projects Data
+        // 2. Custom Project Descriptions
         const customContent = {
             "ScholarSync": {
-                desc: "A centralized academic collaboration platform enabling daily synchronization of activities and docs.",
+                desc: "A centralized academic collaboration platform built with Django that enables students and researchers to synchronize daily academic activities and share documents.",
                 tech: "Django • SQL"
             },
             "LMS": {
-                desc: "High-performance backend system utilizing DRF for secure, optimized library inventory APIs.",
+                desc: "A high-performance backend system engineered using Django REST Framework (DRF) that streamlines library inventory through secure, optimized API endpoints.",
                 tech: "DRF • PostgreSQL"
             },
             "Office-Employee-Management-System": {
-                desc: "Organizational tool digitizing employee records and hierarchies with a responsive dashboard.",
+                desc: "An organizational web application developed in Django to digitize employee records and departmental hierarchies with a responsive dashboard.",
                 tech: "Django • Bootstrap"
             }
         };
 
-        // Render Projects
+        // 3. Fetch and Render Projects
         async function fetchProjects() {
             const grid = document.getElementById('projects-grid');
             try {
@@ -489,95 +611,183 @@
                 const myRepos = repos.filter(repo => !repo.fork).slice(0, 6);
 
                 if (myRepos.length === 0) {
-                    grid.innerHTML = '<p class="text-secondary">No public repositories found.</p>';
+                    grid.innerHTML = '<p class="text-gray-600">No public repositories found.</p>';
                     return;
                 }
 
-                myRepos.forEach(repo => {
+                const gradients = [
+                    'from-blue-100 to-purple-100',
+                    'from-purple-100 to-pink-100',
+                    'from-pink-100 to-orange-100',
+                    'from-orange-100 to-yellow-100',
+                    'from-green-100 to-blue-100',
+                    'from-indigo-100 to-purple-100'
+                ];
+
+                myRepos.forEach((repo, index) => {
                     const custom = customContent[repo.name] || {};
                     const description = custom.desc || repo.description || "Backend logic and data structures.";
                     const language = custom.tech || repo.language || "Python";
 
                     const card = document.createElement('div');
-                    card.className = 'bg-white border border-slate-100 rounded-3xl p-6 flex flex-col hover:-translate-y-2 transition duration-300 hover:shadow-xl hover:shadow-primary/10 group h-full reveal relative overflow-hidden';
+                    card.className = `glow-card rounded-2xl p-6 flex flex-col h-full bg-gradient-to-br ${gradients[index % gradients.length]} border-2 border-white/50`;
                     
                     card.innerHTML = `
-                        <div class="absolute top-0 left-0 w-2 h-full bg-primary transform scale-y-0 group-hover:scale-y-100 transition duration-300"></div>
                         <div class="flex justify-between items-start mb-4">
-                            <div class="bg-primary/10 p-3 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition">
-                                <i class="fas fa-folder text-xl"></i>
-                            </div>
+                            <i class="fas fa-folder-open text-blue-600 text-3xl"></i>
                             <div class="flex items-center gap-4">
-                                <span class="text-xs text-secondary font-bold flex items-center gap-1">
-                                    <i class="fas fa-star text-yellow-400"></i> ${repo.stargazers_count}
+                                <span class="text-xs text-gray-700 font-mono flex items-center gap-1 bg-white/70 px-2 py-1 rounded-lg">
+                                    <i class="far fa-star text-yellow-500"></i> ${repo.stargazers_count}
                                 </span>
-                                <a href="${repo.html_url}" target="_blank" class="text-secondary hover:text-primary transition"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="${repo.html_url}" target="_blank" class="text-gray-700 hover:text-blue-600 transition"><i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
-                        <h3 class="font-bold text-lg mb-3 text-slate-800 font-sans">${repo.name}</h3>
-                        <p class="text-secondary text-sm mb-6 flex-grow leading-relaxed font-medium">${description}</p>
+                        <h3 class="font-bold text-xl mb-3 text-gray-900 font-mono">${repo.name}</h3>
+                        <p class="text-gray-700 text-sm mb-6 flex-grow leading-relaxed">${description}</p>
                         
-                        <div class="mt-auto pt-4 border-t border-slate-50 flex items-center gap-2 text-xs text-primary font-bold font-mono tracking-wider">
-                            <span class="w-2 h-2 rounded-full bg-primary"></span>
+                        <div class="mt-auto pt-4 border-t border-white/50 flex items-center gap-2 text-sm text-blue-700 font-bold">
+                            <span class="w-3 h-3 rounded-full bg-blue-600"></span>
                             ${language}
                         </div>
                     `;
                     grid.appendChild(card);
-                    observer.observe(card);
                 });
 
             } catch (error) {
                 console.error(error);
-                grid.innerHTML = `<div class="text-red-400">Failed to load projects.</div>`;
+                grid.innerHTML = `<div class="text-red-600">Failed to load projects.</div>`;
             }
-        }
-
-        // Render Certifications
-        const certifications = [
-            {
-                title: "Software Engineer Intern",
-                issuer: "HackerRank Certified",
-                icon: "fab fa-hackerrank",
-                color: "text-green-600 bg-green-50"
-            },
-            {
-                title: "Data Analytics Job Simulation",
-                issuer: "Deloitte Australia",
-                icon: "fas fa-briefcase",
-                color: "text-blue-600 bg-blue-50"
-            },
-            {
-                title: "Python Back End Development",
-                issuer: "Besant Technologies",
-                icon: "fab fa-python",
-                color: "text-yellow-600 bg-yellow-50"
-            },
-            {
-                title: "Python Web Developer",
-                issuer: "L&T EduTech",
-                icon: "fas fa-laptop-code",
-                color: "text-purple-600 bg-purple-50"
-            }
-        ];
-
-        function renderCerts() {
-            const container = document.getElementById('certs-grid');
-            container.innerHTML = certifications.map(cert => `
-                <div class="bg-white border border-slate-100 p-5 rounded-2xl hover:shadow-lg transition duration-300 flex items-center gap-5 hover:border-primary/30 group reveal">
-                    <div class="${cert.color} p-4 rounded-xl text-xl shadow-sm group-hover:scale-110 transition">
-                        <i class="${cert.icon}"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg">${cert.title}</h3>
-                        <p class="text-sm text-secondary font-medium">${cert.issuer}</p>
-                    </div>
-                </div>
-            `).join('');
-            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
 
         fetchProjects();
-        renderCerts();
+
+        // ====== HEAT TRAIL & SMOKE EFFECT ======
+        const canvas = document.getElementById('heatCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        let heatPoints = [];
+
+        class HeatPoint {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.life = 100; // Full intensity
+                this.maxLife = 100;
+                this.radius = 40;
+            }
+
+            update() {
+                this.life -= 0.8; // Slower fade
+            }
+
+            draw() {
+                if (this.life <= 0) return;
+
+                const intensity = this.life / this.maxLife;
+                
+                // Heat color gradient: red -> orange -> yellow -> transparent
+                let color;
+                if (intensity > 0.66) {
+                    // Red phase
+                    color = `rgba(220, 38, 38, ${intensity * 0.6})`;
+                } else if (intensity > 0.33) {
+                    // Orange phase
+                    color = `rgba(249, 115, 22, ${intensity * 0.5})`;
+                } else {
+                    // Yellow phase
+                    color = `rgba(251, 191, 36, ${intensity * 0.4})`;
+                }
+
+                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+                gradient.addColorStop(0, color);
+                gradient.addColorStop(1, 'transparent');
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
+            }
+
+            isDead() {
+                return this.life <= 0;
+            }
+        }
+
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Add heat point
+            heatPoints.push(new HeatPoint(mouseX, mouseY));
+
+            // Create smoke particle
+            createSmokeParticle(mouseX, mouseY);
+        });
+
+        function createSmokeParticle(x, y) {
+            const smoke = document.createElement('div');
+            smoke.className = 'smoke-particle';
+            smoke.style.left = x + 'px';
+            smoke.style.top = y + 'px';
+            smoke.style.animationDelay = Math.random() * 0.5 + 's';
+            document.body.appendChild(smoke);
+
+            setTimeout(() => smoke.remove(), 2000);
+        }
+
+        function animateHeat() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            heatPoints = heatPoints.filter(point => !point.isDead());
+
+            heatPoints.forEach(point => {
+                point.update();
+                point.draw();
+            });
+
+            requestAnimationFrame(animateHeat);
+        }
+
+        animateHeat();
+
+        // ====== FLOATING PARTICLES ======
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 6 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.opacity = Math.random() * 0.3 + 0.2;
+            
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = window.innerHeight + 'px';
+            
+            const duration = Math.random() * 10 + 10;
+            particle.style.animation = `particleFloat ${duration}s linear forwards`;
+            
+            document.body.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 300);
+
+        // Initial burst
+        for(let i = 0; i < 20; i++) {
+            setTimeout(createParticle, i * 100);
+        }
     </script>
 </body>
 </html>
