@@ -38,7 +38,7 @@
             color: #1E293B; 
             overflow-x: hidden;
             position: relative;
-            cursor: crosshair; /* Precision cursor for target */
+            cursor: crosshair;
         }
         
         /* Custom Scrollbar */
@@ -60,7 +60,7 @@
             to { background-position: 200% center; }
         }
 
-        /* Heat Trail Canvas */
+        /* Canvas Layers */
         #heatCanvas {
             position: fixed;
             top: 0;
@@ -71,12 +71,12 @@
             z-index: 9999;
         }
 
-        /* Realistic Smoke */
+        /* Realistic Smoke - Darker and Visible */
         .smoke {
             position: fixed;
             pointer-events: none;
             z-index: 9998;
-            filter: blur(4px);
+            filter: blur(3px);
             opacity: 0;
         }
 
@@ -86,8 +86,7 @@
             bottom: 0px;
             right: 20px;
             z-index: 10000;
-            pointer-events: none;
-            /* Floating Animation */
+            pointer-events: none; 
             animation: floatHero 4s ease-in-out infinite;
         }
 
@@ -99,12 +98,11 @@
         #superman-svg {
             width: 100px;
             height: auto;
-            /* Flips the SVG to face left (towards the mouse) */
-            transform: scaleX(-1); 
+            transform: scaleX(-1); /* Face left */
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
         }
 
-        /* Moving Geometric Objects */
+        /* Floating Geometric Objects */
         .floating-object {
             position: fixed;
             pointer-events: none;
@@ -120,7 +118,7 @@
         .hexagon:before { bottom: 100%; border-bottom: 20px solid; }
         .hexagon:after { top: 100%; border-top: 20px solid; }
 
-        /* Glow Card Styles */
+        /* Glow Card */
         .glow-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
@@ -181,18 +179,7 @@
 
     <div class="superman-container">
         <svg id="superman-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path fill="#DC2626" d="M4 6h16v14l-2-2-2 2-2-2-2 2-2-2-2 2-2-2-2 2V6z"/>
-            <path fill="#2563EB" d="M9 14h2v6H9zm4 0h2v6h-2z"/>
-            <path fill="#DC2626" d="M9 20h2v2H8v-1h1zm4 0h2v2h-3v-1h1z"/>
-            <path fill="#2563EB" d="M8 8h8v6H8z"/>
-            <rect x="10" y="9" width="4" height="3" fill="#FBBF24"/>
-            <path fill="#DC2626" d="M11 9h2v1h-2zm-1 1h4v1h-4zm1 1h2v1h-2z"/>
-            <rect x="9" y="13" width="6" height="1" fill="#DC2626"/>
-            <rect x="9" y="3" width="6" height="5" fill="#FCA5A5"/>
-            <path fill="#111827" d="M9 2h6v2H9zM9 3h1v2H9zm5 0h1v2h-1z"/>
-            <rect x="10" y="5" width="1" height="1" fill="#EF4444" class="eye-laser"/>
-            <rect x="13" y="5" width="1" height="1" fill="#EF4444" class="eye-laser"/>
-        </svg>
+            <path fill="#DC2626" d="M4 6h16v14l-2-2-2 2-2-2-2 2-2-2-2 2-2-2-2 2V6z"/> <path fill="#2563EB" d="M9 14h2v6H9zm4 0h2v6h-2z"/> <path fill="#DC2626" d="M9 20h2v2H8v-1h1zm4 0h2v2h-3v-1h1z"/> <path fill="#2563EB" d="M8 8h8v6H8z"/> <rect x="10" y="9" width="4" height="3" fill="#FBBF24"/> <path fill="#DC2626" d="M11 9h2v1h-2zm-1 1h4v1h-4zm1 1h2v1h-2z"/> <rect x="9" y="13" width="6" height="1" fill="#DC2626"/> <rect x="9" y="3" width="6" height="5" fill="#FCA5A5"/> <path fill="#111827" d="M9 2h6v2H9zM9 3h1v2H9zm5 0h1v2h-1z"/> <rect x="10" y="5" width="1" height="1" fill="#EF4444" class="eye-laser"/> <rect x="13" y="5" width="1" height="1" fill="#EF4444" class="eye-laser"/> </svg>
     </div>
 
     <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-blue-100 shadow-sm">
@@ -212,7 +199,9 @@
         <div class="max-w-4xl mx-auto text-center">
             <div class="relative inline-block mb-6 pulse-avatar">
                 <img id="gh-avatar" src="" alt="Profile" class="w-32 h-32 rounded-full border-4 border-blue-400 shadow-2xl">
-                <div class="absolute bottom-0 right-0 w-8 h-8 bg-green-500 rounded-full border-4 border-white animate-pulse"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 bg-green-500 rounded-full border-4 border-white animate-pulse" title="Open to Work">
+                    <span class="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75"></span>
+                </div>
             </div>
             
             <p class="text-blue-600 font-mono mb-4 text-lg animate-pulse">Hello, I am</p>
@@ -244,11 +233,7 @@
 
     <section id="stats" class="py-20 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-10">
-                <i class="fas fa-terminal text-blue-600 text-2xl"></i>
-                <h2 class="text-3xl font-bold text-gray-900">Live Metrics</h2>
-            </div>
-            
+            <div class="flex items-center gap-3 mb-10"><i class="fas fa-terminal text-blue-600 text-2xl"></i><h2 class="text-3xl font-bold text-gray-900">Live Metrics</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glow-card rounded-2xl p-2 animated-border">
                     <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
@@ -281,10 +266,7 @@
 
     <section id="skills" class="py-20 px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
-            <div class="flex items-center gap-3 mb-10">
-                <i class="fas fa-microchip text-blue-600 text-2xl"></i>
-                <h2 class="text-3xl font-bold text-gray-900">Technical Arsenal</h2>
-            </div>
+            <div class="flex items-center gap-3 mb-10"><i class="fas fa-microchip text-blue-600 text-2xl"></i><h2 class="text-3xl font-bold text-gray-900">Technical Arsenal</h2></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div class="glow-card rounded-2xl p-8">
                     <h3 class="text-gray-600 font-mono text-sm mb-6 uppercase font-bold">Core Stack</h3>
@@ -313,7 +295,7 @@
     <section id="projects" class="py-20 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-between items-end mb-10">
-                <div><div class="flex items-center gap-3"><i class="fas fa-project-diagram text-blue-600 text-2xl"></i><h2 class="text-3xl font-bold text-gray-900">Featured Projects</h2></div></div>
+                <div><div class="flex items-center gap-3"><i class="fas fa-project-diagram text-blue-600 text-2xl"></i><h2 class="text-3xl font-bold text-gray-900">Featured Projects</h2></div><p class="text-gray-600 text-sm mt-2">Source code fetched live from GitHub</p></div>
                 <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-mono font-bold">View All &rarr;</a>
             </div>
             <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -335,7 +317,15 @@
                     <div class="flex items-center gap-5"><div class="bg-gradient-to-br from-blue-400 to-indigo-600 p-4 rounded-2xl text-white shadow-lg"><i class="fas fa-briefcase text-3xl"></i></div>
                     <div><h3 class="font-bold text-xl text-gray-900">Data Analytics Job Simulation</h3><p class="text-sm text-gray-600 mt-1">Deloitte Australia (Forage)</p></div></div>
                 </div>
+                <div class="glow-card rounded-2xl p-6">
+                    <div class="flex items-center gap-5"><div class="bg-gradient-to-br from-yellow-400 to-orange-600 p-4 rounded-2xl text-white shadow-lg"><i class="fab fa-python text-3xl"></i></div>
+                    <div><h3 class="font-bold text-xl text-gray-900">Python Back End Development</h3><p class="text-sm text-gray-600 mt-1">Besant Technologies • Django & DRF Specialization</p></div></div>
                 </div>
+                <div class="glow-card rounded-2xl p-6">
+                    <div class="flex items-center gap-5"><div class="bg-gradient-to-br from-purple-400 to-pink-600 p-4 rounded-2xl text-white shadow-lg"><i class="fas fa-laptop-code text-3xl"></i></div>
+                    <div><h3 class="font-bold text-xl text-gray-900">Python Web Developer</h3><p class="text-sm text-gray-600 mt-1">L&T EduTech • Flask & MySQL</p></div></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -360,12 +350,10 @@
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // Fetch Avatar
         fetch(`https://api.github.com/users/${username}`).then(res => res.json()).then(data => { if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; });
 
-        // Project Data
         const customContent = {
-            "ScholarSync": { desc: "Academic collaboration platform enabling students to synchronize activities.", tech: "Django • SQL" },
+            "ScholarSync": { desc: "A centralized academic collaboration platform built with Django.", tech: "Django • SQL" },
             "LMS": { desc: "High-performance backend system utilizing DRF for secure inventory APIs.", tech: "DRF • PostgreSQL" },
             "Office-Employee-Management-System": { desc: "Organizational tool digitizing records with dashboard.", tech: "Django • Bootstrap" }
         };
