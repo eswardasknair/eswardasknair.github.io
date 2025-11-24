@@ -6,11 +6,14 @@
     <title>Eswardas K Nair | Python Backend Engineer</title>
     <meta name="description" content="Portfolio of Eswardas K Nair - Python, Django, SQL & Backend Development">
     
+    <!-- Google Fonts: JetBrains Mono (Code) & Inter (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Tailwind CSS (Modern Styling) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -59,6 +62,7 @@
 </head>
 <body class="antialiased selection:bg-primary selection:text-bg">
 
+    <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-bg/90 backdrop-blur-md border-b border-slate-800">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <a href="#" class="font-mono font-bold text-lg tracking-tighter text-primary hover:text-white transition">&lt;Eswardas_K /&gt;</a>
@@ -66,17 +70,19 @@
                 <a href="#stats" class="hover:text-white transition hidden sm:block">Stats</a>
                 <a href="#skills" class="hover:text-white transition hidden sm:block">Skills</a>
                 <a href="#projects" class="hover:text-white transition hidden sm:block">Projects</a>
+                <!-- IMPORTANT: Rename your resume file to 'resume.pdf' and put it in the same folder -->
                 <a href="resume.pdf" target="_blank" class="text-primary border border-primary px-4 py-1.5 rounded hover:bg-primary hover:text-bg transition font-mono text-xs">RESUME.pdf</a>
             </div>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="min-h-screen flex flex-col justify-center px-6 pt-16">
         <div class="max-w-4xl mx-auto text-center animate-fade-in">
-            
+            <!-- Dynamic Avatar -->
             <div class="relative inline-block mb-6">
-                <img id="gh-avatar" src="" alt="Profile" class="w-32 h-32 rounded-full border-2 border-primary/50 shadow-[0_0_30px_rgba(56,189,248,0.2)] object-cover bg-slate-800">
-                <div class="absolute bottom-0 right-1 w-6 h-6 bg-accent rounded-full border-4 border-bg" title="Open to Work"></div>
+                <img id="gh-avatar" src="" alt="Profile" class="w-28 h-28 rounded-full border-2 border-primary/50 shadow-[0_0_30px_rgba(56,189,248,0.2)]">
+                <div class="absolute bottom-0 right-0 w-6 h-6 bg-accent rounded-full border-4 border-bg" title="Open to Work"></div>
             </div>
             
             <p class="text-primary font-mono mb-4">Hello, I am</p>
@@ -88,6 +94,7 @@
                 I transform complex data into optimized API responses.
             </h2>
             
+            <!-- Social Links -->
             <div class="flex justify-center gap-8 text-2xl text-secondary mb-12">
                 <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-white hover:-translate-y-1 transition"><i class="fab fa-github"></i></a>
                 <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-500 hover:-translate-y-1 transition"><i class="fab fa-linkedin"></i></a>
@@ -97,6 +104,7 @@
         </div>
     </section>
 
+    <!-- Real-Time Stats Dashboard -->
     <section id="stats" class="py-20 bg-card border-y border-slate-800">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-center gap-3 mb-10">
@@ -104,50 +112,51 @@
                 <h2 class="text-2xl font-bold text-white">Live Metrics</h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <div class="bg-bg border border-slate-800 rounded-xl p-1 hover:border-primary/50 transition duration-300 shadow-lg overflow-hidden h-64">
-                    <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="h-full block">
-                        <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=dark&font=Inter&ext=heatmap" alt="LeetCode Stats" class="w-full h-full object-contain opacity-90 hover:opacity-100 transition">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- LeetCode Heatmap -->
+                <div class="bg-bg border border-slate-800 rounded-xl p-1 hover:border-primary/50 transition duration-300 shadow-lg">
+                    <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
+                        <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=dark&font=Inter&ext=heatmap" alt="LeetCode Stats" class="w-full opacity-90 hover:opacity-100 transition">
                     </a>
                 </div>
 
-                <div class="bg-bg border border-slate-800 rounded-xl p-6 hover:border-primary/50 transition duration-300 shadow-lg flex flex-col justify-between h-64 relative group">
-                    <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="absolute inset-0 z-10"></a>
-                    
-                    <div class="flex justify-between items-start">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-800 p-3 rounded-lg text-green-500">
-                                <i class="fab fa-hackerrank text-3xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-white text-lg">HackerRank</h3>
-                                <p class="text-xs text-secondary font-mono bg-slate-800/50 px-2 py-0.5 rounded mt-1 inline-block">@24MCA13</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-external-link-alt text-slate-600 group-hover:text-primary transition"></i>
-                    </div>
-
-                    <div class="space-y-3 mt-4">
-                        <div class="flex justify-between items-center p-2.5 bg-slate-800/30 rounded border border-slate-700/50">
-                            <span class="text-sm text-slate-300 font-medium">Python</span>
-                            <span class="text-xs font-bold text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded"><i class="fas fa-star mr-1"></i> Gold Badge</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2.5 bg-slate-800/30 rounded border border-slate-700/50">
-                            <span class="text-sm text-slate-300 font-medium">SQL</span>
-                            <span class="text-xs font-bold text-yellow-400 bg-yellow-400/10 px-2 py-1 rounded"><i class="fas fa-star mr-1"></i> Gold Badge</span>
-                        </div>
-                        <div class="flex justify-between items-center p-2.5 bg-slate-800/30 rounded border border-slate-700/50">
-                            <span class="text-sm text-slate-300 font-medium">Problem Solving</span>
-                            <span class="text-xs font-bold text-secondary bg-slate-700/50 px-2 py-1 rounded"><i class="fas fa-check mr-1"></i> Intermediate</span>
-                        </div>
-                    </div>
+                <!-- GitHub Stats -->
+                <div class="bg-bg border border-slate-800 rounded-xl p-1 hover:border-primary/50 transition duration-300 shadow-lg">
+                    <a href="https://github.com/eswardasknair" target="_blank">
+                        <img src="https://github-readme-stats.vercel.org/api?username=eswardasknair&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub Stats" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
+                    </a>
                 </div>
-                
+
+                <!-- HackerRank Visual Badge -->
+                <div class="bg-bg border border-slate-800 rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition duration-300 shadow-lg">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h3 class="font-bold text-white flex items-center gap-2"><i class="fab fa-hackerrank text-green-500"></i> HackerRank</h3>
+                            <span class="text-xs font-mono text-secondary bg-slate-800 px-2 py-1 rounded">24MCA13</span>
+                        </div>
+                        <div class="mt-6 space-y-3">
+                            <!-- Manual Badge Representation -->
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">Python</span>
+                                <span class="text-yellow-400"><i class="fas fa-star"></i> Gold Badge</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">SQL</span>
+                                <span class="text-yellow-400"><i class="fas fa-star"></i> Gold Badge</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-300">Problem Solving</span>
+                                <span class="text-secondary"><i class="fas fa-star"></i> Intermediate</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="mt-4 text-xs text-primary hover:underline text-right block">Verify Profile &rarr;</a>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Skills Section -->
     <section id="skills" class="py-20 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="flex items-center gap-3 mb-10">
@@ -156,6 +165,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Hard Skills -->
                 <div>
                     <h3 class="text-secondary font-mono text-xs mb-6 uppercase tracking-widest">Core Stack</h3>
                     <div class="flex flex-wrap gap-3">
@@ -169,6 +179,7 @@
                     </div>
                 </div>
 
+                <!-- Soft Skills (The "Engineering Mindset") -->
                 <div>
                     <h3 class="text-secondary font-mono text-xs mb-6 uppercase tracking-widest">Engineering Mindset</h3>
                     <div class="space-y-4">
@@ -199,6 +210,7 @@
         </div>
     </section>
 
+    <!-- Projects Section (Fetched from GitHub with Custom Overrides) -->
     <section id="projects" class="py-20 bg-card border-t border-slate-800">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-between items-end mb-10">
@@ -213,6 +225,7 @@
             </div>
 
             <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Loading State -->
                 <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
                 <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
                 <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
@@ -220,6 +233,7 @@
         </div>
     </section>
 
+    <!-- Certifications -->
     <section id="certifications" class="py-20 px-6">
         <div class="max-w-4xl mx-auto">
             <div class="flex items-center gap-3 mb-10 border-b border-slate-800 pb-4">
@@ -227,7 +241,40 @@
                 <h2 class="text-2xl font-bold text-white">Certifications</h2>
             </div>
             
-            <div id="certs-grid" class="grid gap-4"></div>
+            <div class="grid gap-4">
+                <!-- Cert 1 -->
+                <div class="cert-card">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fas fa-briefcase"></i></div>
+                        <div>
+                            <h3 class="font-bold text-white">Data Analytics Job Simulation</h3>
+                            <p class="text-sm text-secondary">Deloitte Australia (Forage)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 2 -->
+                <div class="cert-card">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fab fa-python"></i></div>
+                        <div>
+                            <h3 class="font-bold text-white">Python Back End Development</h3>
+                            <p class="text-sm text-secondary">Besant Technologies • Django & DRF Specialization</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cert 3 -->
+                <div class="cert-card">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fas fa-laptop-code"></i></div>
+                        <div>
+                            <h3 class="font-bold text-white">Python Web Developer</h3>
+                            <p class="text-sm text-secondary">L&T EduTech • Flask & MySQL</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -235,6 +282,7 @@
         <p class="text-slate-500 text-sm font-mono">&copy; <span id="year"></span> Eswardas K Nair. Built for Performance.</p>
     </footer>
 
+    <!-- Tailwind Custom Utilities -->
     <style>
         .skill-pill {
             @apply px-4 py-2 bg-slate-800/50 rounded-md border text-sm font-medium hover:bg-slate-800 transition cursor-default;
@@ -247,21 +295,18 @@
         }
     </style>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // 1. Fetch Avatar (Restored GitHub Fetch)
+        // 1. Fetch Avatar
         fetch(`https://api.github.com/users/${username}`)
             .then(res => res.json())
-            .then(data => { 
-                if(data.avatar_url) {
-                    document.getElementById('gh-avatar').src = data.avatar_url; 
-                }
-            })
-            .catch(err => console.log("Avatar fetch failed", err));
+            .then(data => { if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; });
 
-        // 2. Projects Logic
+        // 2. Custom "Resume Quality" Descriptions
+        // This map checks if a repo name matches. If yes, it uses this text instead of GitHub's.
         const customContent = {
             "ScholarSync": {
                 desc: "A centralized academic collaboration platform built with Django that enables students and researchers to synchronize daily academic activities and share documents.",
@@ -271,12 +316,13 @@
                 desc: "A high-performance backend system engineered using Django REST Framework (DRF) that streamlines library inventory through secure, optimized API endpoints.",
                 tech: "DRF • PostgreSQL"
             },
-            "Office-Employee-Management-System": {
+            "Office-Employee-Management-System": { // Check exact repo name on GitHub
                 desc: "An organizational web application developed in Django to digitize employee records and departmental hierarchies with a responsive dashboard.",
                 tech: "Django • Bootstrap"
             }
         };
 
+        // 3. Fetch and Render Projects
         async function fetchProjects() {
             const grid = document.getElementById('projects-grid');
             try {
@@ -292,6 +338,7 @@
                 }
 
                 myRepos.forEach(repo => {
+                    // Check if we have a custom description for this repo
                     const custom = customContent[repo.name] || {};
                     const description = custom.desc || repo.description || "Backend logic and data structures.";
                     const language = custom.tech || repo.language || "Python";
@@ -326,52 +373,7 @@
             }
         }
 
-        // 3. Render Certifications
-        const certifications = [
-            {
-                title: "Software Engineer Intern",
-                issuer: "HackerRank Certified",
-                icon: "fab fa-hackerrank",
-                color: "text-green-500"
-            },
-            {
-                title: "Data Analytics Job Simulation",
-                issuer: "Deloitte Australia (Forage)",
-                icon: "fas fa-briefcase",
-                color: "text-blue-400"
-            },
-            {
-                title: "Python Back End Development",
-                issuer: "Besant Technologies • Django & DRF Specialization",
-                icon: "fab fa-python",
-                color: "text-yellow-400"
-            },
-            {
-                title: "Python Web Developer",
-                issuer: "L&T EduTech • Flask & MySQL",
-                icon: "fas fa-laptop-code",
-                color: "text-purple-400"
-            }
-        ];
-
-        function renderCerts() {
-            const container = document.getElementById('certs-grid');
-            container.innerHTML = certifications.map(cert => `
-                <div class="cert-card flex items-center gap-4">
-                    <div class="bg-slate-800 p-3 rounded-lg ${cert.color} text-xl">
-                        <i class="${cert.icon}"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white">${cert.title}</h3>
-                        <p class="text-sm text-secondary">${cert.issuer}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Initialize
         fetchProjects();
-        renderCerts();
     </script>
 </body>
 </html>
