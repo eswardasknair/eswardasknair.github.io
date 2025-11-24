@@ -62,26 +62,6 @@
             to { background-position: 200% center; }
         }
 
-        /* Heat Trail Canvas */
-        #heatCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* Realistic Smoke */
-        .smoke {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            filter: blur(8px);
-            opacity: 0;
-        }
-
         /* Moving Geometric Objects (like igloo.inc) */
         .floating-object {
             position: fixed;
@@ -133,6 +113,12 @@
         .hexagon:after {
             top: 100%;
             border-top: 20px solid;
+        }
+
+        /* Venom Effect - Magnetic Elements */
+        .magnetic {
+            transition: transform 0.2s ease-out;
+            will-change: transform;
         }
 
         /* Glowing Cards */
@@ -245,19 +231,16 @@
 </head>
 <body class="antialiased selection:bg-blue-200 selection:text-blue-900">
 
-    <!-- Heat Trail Canvas -->
-    <canvas id="heatCanvas"></canvas>
-
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-blue-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="#" class="font-mono font-bold text-lg tracking-tighter text-blue-600 hover:text-blue-800 transition">&lt;Eswardas_K /&gt;</a>
+            <a href="#" class="font-mono font-bold text-lg tracking-tighter text-blue-600 hover:text-blue-800 transition magnetic">&lt;Eswardas_K /&gt;</a>
             <div class="flex gap-6 text-sm font-medium text-gray-700">
-                <a href="#stats" class="hover:text-blue-600 transition hidden sm:block">Stats</a>
-                <a href="#skills" class="hover:text-blue-600 transition hidden sm:block">Skills</a>
-                <a href="#projects" class="hover:text-blue-600 transition hidden sm:block">Projects</a>
-                <a href="#contact" class="hover:text-blue-600 transition hidden sm:block">Contact</a>
-                <a href="resume.pdf" target="_blank" class="text-blue-600 border border-blue-600 px-4 py-1.5 rounded hover:bg-blue-600 hover:text-white transition font-mono text-xs">RESUME.pdf</a>
+                <a href="#stats" class="hover:text-blue-600 transition hidden sm:block magnetic">Stats</a>
+                <a href="#skills" class="hover:text-blue-600 transition hidden sm:block magnetic">Skills</a>
+                <a href="#projects" class="hover:text-blue-600 transition hidden sm:block magnetic">Projects</a>
+                <a href="#contact" class="hover:text-blue-600 transition hidden sm:block magnetic">Contact</a>
+                <a href="resume.pdf" target="_blank" class="text-blue-600 border border-blue-600 px-4 py-1.5 rounded hover:bg-blue-600 hover:text-white transition font-mono text-xs magnetic">RESUME.pdf</a>
             </div>
         </div>
     </nav>
@@ -266,37 +249,37 @@
     <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
             <!-- Dynamic Avatar with Pulse -->
-            <div class="relative inline-block mb-6 pulse-avatar">
+            <div class="relative inline-block mb-6 pulse-avatar magnetic">
                 <img id="gh-avatar" src="" alt="Profile" class="w-32 h-32 rounded-full border-4 border-blue-400 shadow-2xl">
                 <div class="absolute bottom-0 right-0 w-8 h-8 bg-green-500 rounded-full border-4 border-white animate-pulse" title="Open to Work">
                     <span class="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75"></span>
                 </div>
             </div>
             
-            <p class="text-blue-600 font-mono mb-4 text-lg animate-pulse">Hello, I am</p>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 gradient-text">
+            <p class="text-blue-600 font-mono mb-4 text-lg animate-pulse magnetic">Hello, I am</p>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 gradient-text magnetic">
                 Eswardas K Nair
             </h1>
-            <h2 class="text-xl md:text-2xl text-gray-600 font-light mb-8 max-w-2xl mx-auto">
+            <h2 class="text-xl md:text-2xl text-gray-600 font-light mb-8 max-w-2xl mx-auto magnetic">
                 Backend Engineer specializing in <span class="text-gray-900 font-semibold">Django & Scalable Architecture</span>. 
                 I transform complex data into optimized API responses.
             </h2>
             
             <!-- Social Links -->
             <div class="flex justify-center gap-8 text-3xl mb-12">
-                <a href="https://github.com/eswardasknair" target="_blank" class="text-gray-700 hover:text-gray-900 hover:scale-125 transition transform"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="text-blue-600 hover:text-blue-700 hover:scale-125 transition transform"><i class="fab fa-linkedin"></i></a>
-                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="text-yellow-600 hover:text-yellow-700 hover:scale-125 transition transform"><i class="fas fa-code"></i></a>
-                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-green-600 hover:text-green-700 hover:scale-125 transition transform"><i class="fab fa-hackerrank"></i></a>
+                <a href="https://github.com/eswardasknair" target="_blank" class="text-gray-700 hover:text-gray-900 hover:scale-125 transition transform magnetic"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="text-blue-600 hover:text-blue-700 hover:scale-125 transition transform magnetic"><i class="fab fa-linkedin"></i></a>
+                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="text-yellow-600 hover:text-yellow-700 hover:scale-125 transition transform magnetic"><i class="fas fa-code"></i></a>
+                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-green-600 hover:text-green-700 hover:scale-125 transition transform magnetic"><i class="fab fa-hackerrank"></i></a>
             </div>
 
             <!-- Contact Buttons -->
             <div class="flex flex-wrap justify-center gap-4">
-                <a href="tel:6282393871" class="contact-btn relative px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3">
+                <a href="tel:6282393871" class="contact-btn relative px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3 magnetic">
                     <i class="fas fa-phone-alt"></i>
                     <span>Call Me</span>
                 </a>
-                <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3">
+                <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-2xl transition transform hover:scale-105 flex items-center gap-3 magnetic">
                     <i class="fas fa-envelope"></i>
                     <span>Email Me</span>
                 </a>
@@ -307,21 +290,21 @@
     <!-- Real-Time Stats Dashboard -->
     <section id="stats" class="py-20 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-10">
+            <div class="flex items-center gap-3 mb-10 magnetic">
                 <i class="fas fa-terminal text-blue-600 text-2xl"></i>
                 <h2 class="text-3xl font-bold text-gray-900">Live Metrics</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- LeetCode Heatmap (12 weeks) -->
-                <div class="glow-card rounded-2xl p-2 animated-border">
+                <div class="glow-card rounded-2xl p-2 animated-border magnetic">
                     <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
                         <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Inter&ext=activity" alt="LeetCode Stats" class="w-full rounded-xl opacity-90 hover:opacity-100 transition">
                     </a>
                 </div>
 
                 <!-- HackerRank Enhanced Badge -->
-                <div class="glow-card rounded-2xl p-8 flex flex-col justify-between animated-border">
+                <div class="glow-card rounded-2xl p-8 flex flex-col justify-between animated-border magnetic">
                     <div>
                         <div class="flex justify-between items-start mb-6">
                             <h3 class="font-bold text-2xl text-gray-900 flex items-center gap-3">
@@ -362,59 +345,59 @@
     <!-- Skills Section -->
     <section id="skills" class="py-20 px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
-            <div class="flex items-center gap-3 mb-10">
+            <div class="flex items-center gap-3 mb-10 magnetic">
                 <i class="fas fa-microchip text-blue-600 text-2xl"></i>
                 <h2 class="text-3xl font-bold text-gray-900">Technical Arsenal</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <!-- Hard Skills -->
-                <div class="glow-card rounded-2xl p-8">
+                <div class="glow-card rounded-2xl p-8 magnetic">
                     <h3 class="text-gray-600 font-mono text-sm mb-6 uppercase tracking-widest font-bold">Core Stack</h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer magnetic">
                             <i class="fab fa-python mr-2"></i>Python 3
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-green-100 text-green-700 border-2 border-green-300 rounded-xl text-sm font-bold hover:bg-green-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-green-100 text-green-700 border-2 border-green-300 rounded-xl text-sm font-bold hover:bg-green-200 transition cursor-pointer magnetic">
                             <i class="fas fa-layer-group mr-2"></i>Django
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-red-100 text-red-700 border-2 border-red-300 rounded-xl text-sm font-bold hover:bg-red-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-red-100 text-red-700 border-2 border-red-300 rounded-xl text-sm font-bold hover:bg-red-200 transition cursor-pointer magnetic">
                             <i class="fas fa-server mr-2"></i>DRF (Rest API)
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-blue-100 text-blue-700 border-2 border-blue-300 rounded-xl text-sm font-bold hover:bg-blue-200 transition cursor-pointer magnetic">
                             <i class="fas fa-database mr-2"></i>PostgreSQL
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-orange-100 text-orange-700 border-2 border-orange-300 rounded-xl text-sm font-bold hover:bg-orange-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-orange-100 text-orange-700 border-2 border-orange-300 rounded-xl text-sm font-bold hover:bg-orange-200 transition cursor-pointer magnetic">
                             <i class="fas fa-database mr-2"></i>MySQL
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-gray-100 text-gray-700 border-2 border-gray-300 rounded-xl text-sm font-bold hover:bg-gray-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-gray-100 text-gray-700 border-2 border-gray-300 rounded-xl text-sm font-bold hover:bg-gray-200 transition cursor-pointer magnetic">
                             <i class="fas fa-code-branch mr-2"></i>Git/GitHub
                         </span>
-                        <span class="skill-pill px-5 py-3 bg-purple-100 text-purple-700 border-2 border-purple-300 rounded-xl text-sm font-bold hover:bg-purple-200 transition cursor-pointer">
+                        <span class="skill-pill px-5 py-3 bg-purple-100 text-purple-700 border-2 border-purple-300 rounded-xl text-sm font-bold hover:bg-purple-200 transition cursor-pointer magnetic">
                             <i class="fas fa-brain mr-2"></i>DSA
                         </span>
                     </div>
                 </div>
 
                 <!-- Soft Skills -->
-                <div class="glow-card rounded-2xl p-8">
+                <div class="glow-card rounded-2xl p-8 magnetic">
                     <h3 class="text-gray-600 font-mono text-sm mb-6 uppercase tracking-widest font-bold">Engineering Mindset</h3>
                     <div class="space-y-5">
-                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl hover:shadow-md transition magnetic">
                             <i class="fas fa-bolt text-yellow-600 text-xl mt-1"></i>
                             <div>
                                 <h4 class="text-gray-900 text-base font-bold">First-Principles Thinking</h4>
                                 <p class="text-sm text-gray-600 mt-1">Deconstructing complex problems to build optimized solutions from scratch.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl hover:shadow-md transition magnetic">
                             <i class="fas fa-check-double text-green-600 text-xl mt-1"></i>
                             <div>
                                 <h4 class="text-gray-900 text-base font-bold">End-to-End Ownership</h4>
                                 <p class="text-sm text-gray-600 mt-1">Taking full responsibility for features from database schema to API deployment.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl hover:shadow-md transition">
+                        <div class="flex items-start gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl hover:shadow-md transition magnetic">
                             <i class="fas fa-sync-alt text-blue-600 text-xl mt-1"></i>
                             <div>
                                 <h4 class="text-gray-900 text-base font-bold">Rapid Tech Adaptation</h4>
@@ -432,13 +415,13 @@
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex justify-between items-end mb-10">
                 <div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-3 magnetic">
                         <i class="fas fa-project-diagram text-blue-600 text-2xl"></i>
                         <h2 class="text-3xl font-bold text-gray-900">Featured Projects</h2>
                     </div>
                     <p class="text-gray-600 text-sm mt-2">Source code fetched live from GitHub</p>
                 </div>
-                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-mono transition font-bold">
+                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-mono transition font-bold magnetic">
                     View All &rarr;
                 </a>
             </div>
@@ -455,14 +438,14 @@
     <!-- Certifications -->
     <section id="certifications" class="py-20 px-6 relative z-10">
         <div class="max-w-4xl mx-auto">
-            <div class="flex items-center gap-3 mb-10">
+            <div class="flex items-center gap-3 mb-10 magnetic">
                 <i class="fas fa-certificate text-blue-600 text-2xl"></i>
                 <h2 class="text-3xl font-bold text-gray-900">Certifications</h2>
             </div>
             
             <div class="grid gap-5">
                 <!-- Cert 1 - NEW -->
-                <div class="glow-card rounded-2xl p-6 animated-border">
+                <div class="glow-card rounded-2xl p-6 animated-border magnetic">
                     <div class="flex items-center gap-5">
                         <div class="bg-gradient-to-br from-green-400 to-green-600 p-4 rounded-2xl text-white shadow-lg">
                             <i class="fab fa-hackerrank text-3xl"></i>
@@ -475,7 +458,7 @@
                 </div>
 
                 <!-- Cert 2 -->
-                <div class="glow-card rounded-2xl p-6">
+                <div class="glow-card rounded-2xl p-6 magnetic">
                     <div class="flex items-center gap-5">
                         <div class="bg-gradient-to-br from-blue-400 to-indigo-600 p-4 rounded-2xl text-white shadow-lg">
                             <i class="fas fa-briefcase text-3xl"></i>
@@ -488,7 +471,7 @@
                 </div>
 
                 <!-- Cert 3 -->
-                <div class="glow-card rounded-2xl p-6">
+                <div class="glow-card rounded-2xl p-6 magnetic">
                     <div class="flex items-center gap-5">
                         <div class="bg-gradient-to-br from-yellow-400 to-orange-600 p-4 rounded-2xl text-white shadow-lg">
                             <i class="fab fa-python text-3xl"></i>
@@ -501,7 +484,7 @@
                 </div>
 
                 <!-- Cert 4 -->
-                <div class="glow-card rounded-2xl p-6">
+                <div class="glow-card rounded-2xl p-6 magnetic">
                     <div class="flex items-center gap-5">
                         <div class="bg-gradient-to-br from-purple-400 to-pink-600 p-4 rounded-2xl text-white shadow-lg">
                             <i class="fas fa-laptop-code text-3xl"></i>
@@ -519,18 +502,18 @@
     <!-- Contact Section -->
     <section id="contact" class="py-20 px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <div class="glow-card rounded-3xl p-12 animated-border">
-                <i class="fas fa-paper-plane text-5xl text-blue-600 mb-6"></i>
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">Let's Build Something Amazing</h2>
-                <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            <div class="glow-card rounded-3xl p-12 animated-border magnetic">
+                <i class="fas fa-paper-plane text-5xl text-blue-600 mb-6 magnetic"></i>
+                <h2 class="text-4xl font-bold text-gray-900 mb-4 magnetic">Let's Build Something Amazing</h2>
+                <p class="text-gray-600 text-lg mb-8 max-w-2xl mx-auto magnetic">
                     I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
                 </p>
                 <div class="flex flex-wrap justify-center gap-5">
-                    <a href="tel:6282393871" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg">
+                    <a href="tel:6282393871" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg magnetic">
                         <i class="fas fa-phone-alt text-xl"></i>
                         <span>Call Now</span>
                     </a>
-                    <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg">
+                    <a href="mailto:esdkncc@gmail.com" class="contact-btn relative px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transition transform hover:scale-110 flex items-center gap-3 text-lg magnetic">
                         <i class="fas fa-envelope text-xl"></i>
                         <span>Send Email</span>
                     </a>
@@ -601,7 +584,7 @@
                     const language = custom.tech || repo.language || "Python";
 
                     const card = document.createElement('div');
-                    card.className = `glow-card rounded-2xl p-6 flex flex-col h-full bg-gradient-to-br ${gradients[index % gradients.length]} border-2 border-white/50`;
+                    card.className = `glow-card rounded-2xl p-6 flex flex-col h-full bg-gradient-to-br ${gradients[index % gradients.length]} border-2 border-white/50 magnetic`;
                     
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-4">
@@ -632,166 +615,50 @@
 
         fetchProjects();
 
-        // ====== REALISTIC HEAT MAP EFFECT ======
-        const canvas = document.getElementById('heatCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // ====== VENOM MAGNETIC EFFECT ======
+        const magneticElements = document.querySelectorAll('.magnetic');
+        const magneticStrength = 0.3; // How much the element moves (0.3 = 30% of distance)
+        const magneticRadius = 100; // Pixels: how close mouse needs to be
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Thermal color gradient (like thermal imaging camera)
-        function getHeatColor(intensity) {
-            // intensity: 0 (cold) to 1 (very hot)
-            if (intensity < 0.2) {
-                // Dark blue to blue
-                const t = intensity / 0.2;
-                return `rgba(${Math.floor(0 + 30*t)}, ${Math.floor(0 + 50*t)}, ${Math.floor(100 + 155*t)}, ${0.4 + t*0.3})`;
-            } else if (intensity < 0.4) {
-                // Blue to cyan
-                const t = (intensity - 0.2) / 0.2;
-                return `rgba(${Math.floor(30 + 0*t)}, ${Math.floor(50 + 205*t)}, ${Math.floor(255 + 0*t)}, ${0.5 + t*0.2})`;
-            } else if (intensity < 0.6) {
-                // Cyan to green
-                const t = (intensity - 0.4) / 0.2;
-                return `rgba(${Math.floor(30*t)}, ${Math.floor(255 - 55*t)}, ${Math.floor(255 - 255*t)}, ${0.6 + t*0.2})`;
-            } else if (intensity < 0.75) {
-                // Green to yellow
-                const t = (intensity - 0.6) / 0.15;
-                return `rgba(${Math.floor(30 + 225*t)}, ${Math.floor(200 + 55*t)}, 0, ${0.7 + t*0.15})`;
-            } else if (intensity < 0.9) {
-                // Yellow to orange/red
-                const t = (intensity - 0.75) / 0.15;
-                return `rgba(255, ${Math.floor(255 - 100*t)}, 0, ${0.8 + t*0.1})`;
-            } else {
-                // Red to white (extreme heat)
-                const t = (intensity - 0.9) / 0.1;
-                return `rgba(255, ${Math.floor(155 + 100*t)}, ${Math.floor(0 + 255*t)}, ${0.9 + t*0.1})`;
-            }
-        }
-
-        // Heat grid for pixel-based rendering
-        const gridSize = 8; // Pixel size for heat map
-        const cols = Math.ceil(canvas.width / gridSize);
-        const rows = Math.ceil(canvas.height / gridSize);
-        let heatMap = Array(rows).fill(0).map(() => Array(cols).fill(0));
-
-        let mouseX = -100, mouseY = -100;
-        let mouseStillTime = 0;
-        let lastMouseX = -100, lastMouseY = -100;
+        let mouseX = 0;
+        let mouseY = 0;
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-
-            // Check if mouse is moving or stationary
-            if (Math.abs(mouseX - lastMouseX) < 2 && Math.abs(mouseY - lastMouseY) < 2) {
-                mouseStillTime++;
-            } else {
-                mouseStillTime = 0;
-            }
-
-            lastMouseX = mouseX;
-            lastMouseY = mouseY;
-
-            // Create smoke when moving
-            if (Math.random() > 0.7) {
-                createRealisticSmoke(mouseX, mouseY);
-            }
         });
 
-        function createRealisticSmoke(x, y) {
-            const smokeCount = 3;
-            for (let i = 0; i < smokeCount; i++) {
-                const smoke = document.createElement('div');
-                smoke.className = 'smoke';
-                
-                const size = 20 + Math.random() * 30;
-                smoke.style.width = size + 'px';
-                smoke.style.height = size + 'px';
-                smoke.style.left = (x - size/2 + (Math.random() - 0.5) * 20) + 'px';
-                smoke.style.top = (y - size/2 + (Math.random() - 0.5) * 20) + 'px';
-                smoke.style.borderRadius = '50%';
-                
-                const gray = 150 + Math.floor(Math.random() * 50);
-                smoke.style.background = `radial-gradient(circle, rgba(${gray}, ${gray}, ${gray}, 0.3), transparent)`;
-                
-                document.body.appendChild(smoke);
+        function animateMagnetic() {
+            magneticElements.forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const elementCenterX = rect.left + rect.width / 2;
+                const elementCenterY = rect.top + rect.height / 2;
 
-                // Animate smoke
-                const duration = 1500 + Math.random() * 1000;
-                const tx = (Math.random() - 0.5) * 100;
-                const ty = -100 - Math.random() * 100;
-                
-                smoke.animate([
-                    { transform: 'translate(0, 0) scale(1)', opacity: 0.4 },
-                    { transform: `translate(${tx}px, ${ty}px) scale(2.5)`, opacity: 0 }
-                ], {
-                    duration: duration,
-                    easing: 'ease-out'
-                });
+                // Calculate distance from mouse to element center
+                const deltaX = mouseX - elementCenterX;
+                const deltaY = mouseY - elementCenterY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-                setTimeout(() => smoke.remove(), duration);
-            }
-        }
+                // If mouse is within magnetic radius
+                if (distance < magneticRadius) {
+                    // Calculate pull strength based on distance (closer = stronger)
+                    const pullStrength = (1 - distance / magneticRadius) * magneticStrength;
+                    
+                    // Move element toward mouse
+                    const moveX = deltaX * pullStrength;
+                    const moveY = deltaY * pullStrength;
 
-        function updateHeatMap() {
-            // Cool down all cells gradually
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    heatMap[row][col] *= 0.96; // Slow cooling
-                    if (heatMap[row][col] < 0.01) heatMap[row][col] = 0;
+                    element.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                } else {
+                    // Reset position when mouse is far
+                    element.style.transform = 'translate(0, 0)';
                 }
-            }
+            });
 
-            // Add heat at mouse position
-            if (mouseX >= 0 && mouseY >= 0) {
-                const col = Math.floor(mouseX / gridSize);
-                const row = Math.floor(mouseY / gridSize);
-
-                const heatRadius = 5;
-                const heatIncrease = 0.03 + (mouseStillTime * 0.002); // More heat when stationary
-
-                for (let dr = -heatRadius; dr <= heatRadius; dr++) {
-                    for (let dc = -heatRadius; dc <= heatRadius; dc++) {
-                        const r = row + dr;
-                        const c = col + dc;
-                        if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                            const distance = Math.sqrt(dr * dr + dc * dc);
-                            if (distance <= heatRadius) {
-                                const falloff = 1 - (distance / heatRadius);
-                                heatMap[r][c] = Math.min(1, heatMap[r][c] + heatIncrease * falloff);
-                            }
-                        }
-                    }
-                }
-            }
+            requestAnimationFrame(animateMagnetic);
         }
 
-        function renderHeatMap() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const heat = heatMap[row][col];
-                    if (heat > 0.02) {
-                        ctx.fillStyle = getHeatColor(heat);
-                        ctx.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
-                    }
-                }
-            }
-        }
-
-        function animateHeat() {
-            updateHeatMap();
-            renderHeatMap();
-            requestAnimationFrame(animateHeat);
-        }
-
-        animateHeat();
+        animateMagnetic();
 
         // ====== FLOATING GEOMETRIC OBJECTS (like igloo.inc) ======
         const shapes = ['triangle', 'square', 'circle', 'hexagon'];
@@ -816,7 +683,7 @@
             }
 
             // Random starting position (from edges)
-            const startSide = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+            const startSide = Math.floor(Math.random() * 4);
             let startX, startY, endX, endY;
 
             switch(startSide) {
