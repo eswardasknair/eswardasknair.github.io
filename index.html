@@ -75,11 +75,29 @@
             position: fixed;
             pointer-events: none;
             z-index: 9998;
-            filter: blur(4px); /* Reduced blur slightly for sharper dark smoke */
+            filter: blur(4px);
             opacity: 0;
         }
 
-        /* Moving Geometric Objects (like igloo.inc) */
+        /* Superman Corner */
+        .superman-corner {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            transition: transform 0.3s ease;
+        }
+        .superman-corner:hover {
+            transform: translateY(-10px) scale(1.1);
+        }
+        .pixel-img {
+            image-rendering: pixelated;
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Moving Geometric Objects */
         .floating-object {
             position: fixed;
             pointer-events: none;
@@ -240,9 +258,13 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+<body class="antialiased selection:bg-red-200 selection:text-red-900">
 
     <canvas id="heatCanvas"></canvas>
+
+    <div class="superman-corner" title="Saving the Backend!">
+        <img src="https://img.icons8.com/color/96/superman.png" alt="Superman" class="pixel-img">
+    </div>
 
     <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-blue-100 shadow-sm">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -608,52 +630,42 @@
 
         fetchProjects();
 
-        // ====== REALISTIC HEAT MAP EFFECT ======
+        // ====== HEAT VISION PHYSICS ======
         const canvas = document.getElementById('heatCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        
+        let width, height;
+        let gridSize = 4; // REDUCED GRID SIZE FOR HIGH RES
+        let cols, rows;
+        let heatMap = [];
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            cols = Math.ceil(width / gridSize);
+            rows = Math.ceil(height / gridSize);
+            heatMap = Array(rows).fill(0).map(() => Array(cols).fill(0));
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Thermal color gradient (like thermal imaging camera)
+        // Superman Heat Vision Color Palette
         function getHeatColor(intensity) {
-            // intensity: 0 (cold) to 1 (very hot)
-            if (intensity < 0.2) {
-                // Dark blue to blue
-                const t = intensity / 0.2;
-                return `rgba(${Math.floor(0 + 30*t)}, ${Math.floor(0 + 50*t)}, ${Math.floor(100 + 155*t)}, ${0.4 + t*0.3})`;
-            } else if (intensity < 0.4) {
-                // Blue to cyan
-                const t = (intensity - 0.2) / 0.2;
-                return `rgba(${Math.floor(30 + 0*t)}, ${Math.floor(50 + 205*t)}, ${Math.floor(255 + 0*t)}, ${0.5 + t*0.2})`;
+            // Intensity 0.0 - 1.0
+            if (intensity < 0.3) {
+                // Deep Dark Red
+                return `rgba(139, 0, 0, ${0.3 + intensity})`; 
             } else if (intensity < 0.6) {
-                // Cyan to green
-                const t = (intensity - 0.4) / 0.2;
-                return `rgba(${Math.floor(30*t)}, ${Math.floor(255 - 55*t)}, ${Math.floor(255 - 255*t)}, ${0.6 + t*0.2})`;
-            } else if (intensity < 0.75) {
-                // Green to yellow
-                const t = (intensity - 0.6) / 0.15;
-                return `rgba(${Math.floor(30 + 225*t)}, ${Math.floor(200 + 55*t)}, 0, ${0.7 + t*0.15})`;
-            } else if (intensity < 0.9) {
-                // Yellow to orange/red
-                const t = (intensity - 0.75) / 0.15;
-                return `rgba(255, ${Math.floor(255 - 100*t)}, 0, ${0.8 + t*0.1})`;
+                // Bright Laser Red
+                return `rgba(255, 0, 0, ${0.5 + intensity * 0.5})`;
+            } else if (intensity < 0.85) {
+                // Intense Orange
+                return `rgba(255, 140, 0, ${0.7 + intensity * 0.2})`;
             } else {
-                // Red to white (extreme heat)
-                const t = (intensity - 0.9) / 0.1;
-                return `rgba(255, ${Math.floor(155 + 100*t)}, ${Math.floor(0 + 255*t)}, ${0.9 + t*0.1})`;
+                // White Hot
+                return `rgba(255, 255, 224, ${0.9})`;
             }
         }
-
-        // Heat grid for pixel-based rendering
-        const gridSize = 8; // Pixel size for heat map
-        const cols = Math.ceil(canvas.width / gridSize);
-        const rows = Math.ceil(canvas.height / gridSize);
-        let heatMap = Array(rows).fill(0).map(() => Array(cols).fill(0));
 
         let mouseX = -100, mouseY = -100;
         let mouseStillTime = 0;
@@ -663,86 +675,74 @@
             mouseX = e.clientX;
             mouseY = e.clientY;
 
-            // Check if mouse is moving or stationary
-            if (Math.abs(mouseX - lastMouseX) < 2 && Math.abs(mouseY - lastMouseY) < 2) {
-                mouseStillTime++;
-            } else {
+            // Smoke Generation
+            if (Math.abs(mouseX - lastMouseX) > 2 || Math.abs(mouseY - lastMouseY) > 2) {
+                if (Math.random() > 0.6) createRealisticSmoke(mouseX, mouseY);
                 mouseStillTime = 0;
+            } else {
+                mouseStillTime++;
             }
-
             lastMouseX = mouseX;
             lastMouseY = mouseY;
-
-            // Create smoke when moving
-            if (Math.random() > 0.7) {
-                createRealisticSmoke(mouseX, mouseY);
-            }
         });
 
+        // GRAY SMOKE
         function createRealisticSmoke(x, y) {
-            const smokeCount = 3;
-            for (let i = 0; i < smokeCount; i++) {
-                const smoke = document.createElement('div');
-                smoke.className = 'smoke';
-                
-                const size = 20 + Math.random() * 30;
-                smoke.style.width = size + 'px';
-                smoke.style.height = size + 'px';
-                smoke.style.left = (x - size/2 + (Math.random() - 0.5) * 20) + 'px';
-                smoke.style.top = (y - size/2 + (Math.random() - 0.5) * 20) + 'px';
-                smoke.style.borderRadius = '50%';
-                
-                // --- MODIFIED: Darker smoke ---
-                const gray = 20 + Math.floor(Math.random() * 30); // Dark charcoal (20-50)
-                // --- MODIFIED: Higher opacity in gradient ---
-                smoke.style.background = `radial-gradient(circle, rgba(${gray}, ${gray}, ${gray}, 0.8), transparent)`;
-                
-                document.body.appendChild(smoke);
+            const smoke = document.createElement('div');
+            smoke.className = 'smoke';
+            
+            const size = 15 + Math.random() * 20;
+            smoke.style.width = size + 'px';
+            smoke.style.height = size + 'px';
+            smoke.style.left = (x - size/2) + 'px';
+            smoke.style.top = (y - size/2) + 'px';
+            smoke.style.borderRadius = '50%';
+            
+            // Lighter Gray for Smoke
+            const gray = 100 + Math.floor(Math.random() * 50); 
+            smoke.style.background = `radial-gradient(circle, rgba(${gray}, ${gray}, ${gray}, 0.6), transparent)`;
+            
+            document.body.appendChild(smoke);
 
-                // Animate smoke
-                const duration = 1500 + Math.random() * 1000;
-                const tx = (Math.random() - 0.5) * 100;
-                const ty = -100 - Math.random() * 100;
-                
-                smoke.animate([
-                    { transform: 'translate(0, 0) scale(1)', opacity: 0.9 }, // --- MODIFIED: Higher start opacity ---
-                    { transform: `translate(${tx}px, ${ty}px) scale(2.5)`, opacity: 0 }
-                ], {
-                    duration: duration,
-                    easing: 'ease-out'
-                });
+            const duration = 1000 + Math.random() * 800;
+            const tx = (Math.random() - 0.5) * 80;
+            const ty = -80 - Math.random() * 50;
+            
+            smoke.animate([
+                { transform: 'translate(0, 0) scale(0.5)', opacity: 0.6 },
+                { transform: `translate(${tx}px, ${ty}px) scale(2)`, opacity: 0 }
+            ], {
+                duration: duration,
+                easing: 'ease-out'
+            });
 
-                setTimeout(() => smoke.remove(), duration);
-            }
+            setTimeout(() => smoke.remove(), duration);
         }
 
         function updateHeatMap() {
-            // Cool down all cells gradually
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    heatMap[row][col] *= 0.96; // Slow cooling
-                    if (heatMap[row][col] < 0.01) heatMap[row][col] = 0;
+            // Cooling
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    heatMap[r][c] *= 0.94; // Fast cooling for laser effect
+                    if (heatMap[r][c] < 0.01) heatMap[r][c] = 0;
                 }
             }
 
-            // Add heat at mouse position
+            // Heating
             if (mouseX >= 0 && mouseY >= 0) {
-                const col = Math.floor(mouseX / gridSize);
-                const row = Math.floor(mouseY / gridSize);
+                const c = Math.floor(mouseX / gridSize);
+                const r = Math.floor(mouseY / gridSize);
+                const radius = 3; // Tight beam radius
+                const heatAmt = 0.15 + (mouseStillTime * 0.01);
 
-                // --- MODIFIED: Smaller radius ---
-                const heatRadius = 2; // Reduced from 5 to 2
-                const heatIncrease = 0.03 + (mouseStillTime * 0.002); // More heat when stationary
-
-                for (let dr = -heatRadius; dr <= heatRadius; dr++) {
-                    for (let dc = -heatRadius; dc <= heatRadius; dc++) {
-                        const r = row + dr;
-                        const c = col + dc;
-                        if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                            const distance = Math.sqrt(dr * dr + dc * dc);
-                            if (distance <= heatRadius) {
-                                const falloff = 1 - (distance / heatRadius);
-                                heatMap[r][c] = Math.min(1, heatMap[r][c] + heatIncrease * falloff);
+                for (let dr = -radius; dr <= radius; dr++) {
+                    for (let dc = -radius; dc <= radius; dc++) {
+                        const nr = r + dr;
+                        const nc = c + dc;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                            const dist = Math.sqrt(dr*dr + dc*dc);
+                            if (dist <= radius) {
+                                heatMap[nr][nc] = Math.min(1, heatMap[nr][nc] + heatAmt * (1 - dist/radius));
                             }
                         }
                     }
@@ -750,29 +750,25 @@
             }
         }
 
-        function renderHeatMap() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const heat = heatMap[row][col];
-                    if (heat > 0.02) {
-                        ctx.fillStyle = getHeatColor(heat);
-                        ctx.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
+        function drawHeatMap() {
+            ctx.clearRect(0, 0, width, height);
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const val = heatMap[r][c];
+                    if (val > 0.05) {
+                        ctx.fillStyle = getHeatColor(val);
+                        ctx.fillRect(c * gridSize, r * gridSize, gridSize, gridSize);
                     }
                 }
             }
+            requestAnimationFrame(() => {
+                updateHeatMap();
+                drawHeatMap();
+            });
         }
+        drawHeatMap();
 
-        function animateHeat() {
-            updateHeatMap();
-            renderHeatMap();
-            requestAnimationFrame(animateHeat);
-        }
-
-        animateHeat();
-
-        // ====== FLOATING GEOMETRIC OBJECTS (like igloo.inc) ======
+        // ====== FLOATING GEOMETRIC OBJECTS ======
         const shapes = ['triangle', 'square', 'circle', 'hexagon'];
         const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
 
@@ -787,91 +783,44 @@
                 obj.style.borderBottomColor = color;
             } else if (shape === 'hexagon') {
                 obj.style.background = color;
-                const before = window.getComputedStyle(obj, ':before');
-                const after = window.getComputedStyle(obj, ':after');
                 obj.style.setProperty('--hex-color', color);
             } else {
                 obj.style.background = color;
             }
 
-            // Random starting position (from edges)
-            const startSide = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+            const startSide = Math.floor(Math.random() * 4);
             let startX, startY, endX, endY;
 
             switch(startSide) {
-                case 0: // top
-                    startX = Math.random() * window.innerWidth;
-                    startY = -100;
-                    endX = Math.random() * window.innerWidth;
-                    endY = window.innerHeight + 100;
-                    break;
-                case 1: // right
-                    startX = window.innerWidth + 100;
-                    startY = Math.random() * window.innerHeight;
-                    endX = -100;
-                    endY = Math.random() * window.innerHeight;
-                    break;
-                case 2: // bottom
-                    startX = Math.random() * window.innerWidth;
-                    startY = window.innerHeight + 100;
-                    endX = Math.random() * window.innerWidth;
-                    endY = -100;
-                    break;
-                case 3: // left
-                    startX = -100;
-                    startY = Math.random() * window.innerHeight;
-                    endX = window.innerWidth + 100;
-                    endY = Math.random() * window.innerHeight;
-                    break;
+                case 0: startX = Math.random() * window.innerWidth; startY = -100; endX = Math.random() * window.innerWidth; endY = window.innerHeight + 100; break;
+                case 1: startX = window.innerWidth + 100; startY = Math.random() * window.innerHeight; endX = -100; endY = Math.random() * window.innerHeight; break;
+                case 2: startX = Math.random() * window.innerWidth; startY = window.innerHeight + 100; endX = Math.random() * window.innerWidth; endY = -100; break;
+                case 3: startX = -100; startY = Math.random() * window.innerHeight; endX = window.innerWidth + 100; endY = Math.random() * window.innerHeight; break;
             }
 
             obj.style.left = startX + 'px';
             obj.style.top = startY + 'px';
-
             document.body.appendChild(obj);
 
             const duration = 15000 + Math.random() * 15000;
             const rotation = Math.random() * 720 - 360;
 
             obj.animate([
-                { 
-                    transform: 'translate(0, 0) rotate(0deg)',
-                    opacity: 0 
-                },
-                { 
-                    opacity: 0.4,
-                    offset: 0.1 
-                },
-                { 
-                    opacity: 0.4,
-                    offset: 0.9 
-                },
-                { 
-                    transform: `translate(${endX - startX}px, ${endY - startY}px) rotate(${rotation}deg)`,
-                    opacity: 0 
-                }
-            ], {
-                duration: duration,
-                easing: 'linear'
-            });
+                { transform: 'translate(0, 0) rotate(0deg)', opacity: 0 },
+                { opacity: 0.4, offset: 0.1 },
+                { opacity: 0.4, offset: 0.9 },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px) rotate(${rotation}deg)`, opacity: 0 }
+            ], { duration: duration, easing: 'linear' });
 
             setTimeout(() => obj.remove(), duration);
         }
 
-        // Create objects periodically
         setInterval(createFloatingObject, 2000);
+        for (let i = 0; i < 8; i++) setTimeout(createFloatingObject, i * 500);
 
-        // Initial burst
-        for (let i = 0; i < 8; i++) {
-            setTimeout(createFloatingObject, i * 500);
-        }
-
-        // Add hex color variable support for hexagon
+        // Styles for Hexagon
         const style = document.createElement('style');
-        style.innerHTML = `
-            .hexagon:before { border-bottom-color: inherit; }
-            .hexagon:after { border-top-color: inherit; }
-        `;
+        style.innerHTML = `.hexagon:before { border-bottom-color: inherit; } .hexagon:after { border-top-color: inherit; }`;
         document.head.appendChild(style);
     </script>
 </body>
