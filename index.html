@@ -7,22 +7,23 @@
     <meta name="description" content="Portfolio of Eswardas K Nair - Python, Django, SQL & Backend Development">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class', // We are switching to light mode primarily
             theme: {
                 extend: {
                     colors: {
-                        bg: '#F8FAFC',       /* Light Slate Background */
-                        surface: '#FFFFFF',  /* Pure White Cards */
-                        primary: '#0284C7',  /* Sky Blue 600 */
+                        bg: '#F8FAFC',       /* Slate 50 */
+                        surface: '#FFFFFF',  /* Pure White */
+                        primary: '#0EA5E9',  /* Sky 500 */
                         secondary: '#64748B',/* Slate 500 */
                         text: '#0F172A',     /* Slate 900 */
-                        accent: '#10B981'
+                        accent: '#F59E0B',   /* Amber 500 (Heat color) */
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -30,7 +31,7 @@
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'float-delayed': 'float 8s ease-in-out infinite 1s',
+                        'float-delayed': 'float 8s ease-in-out infinite 2s',
                     },
                     keyframes: {
                         float: {
@@ -47,130 +48,123 @@
         body { 
             background-color: #F8FAFC; 
             color: #0F172A; 
-            cursor: default; /* We will add custom effects */
             overflow-x: hidden;
         }
 
-        /* 1. SMOKE & HEATMAP CANVAS LAYER */
+        /* CANVAS LAYER FOR MOUSE EFFECTS */
         #effects-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Let clicks pass through */
+            pointer-events: none; /* Allows clicking through the canvas */
             z-index: 9999;
+            mix-blend-mode: multiply; /* Blends heat into the white background */
         }
 
-        /* 2. HEATMAP GLOW FOLLOWER */
-        .cursor-glow {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 0;
-            transition: width 0.2s, height 0.2s;
-            mix-blend-mode: multiply;
-        }
-
-        /* 3. FLOATING SHAPES */
-        .shape-blob {
+        /* FLOATING BACKGROUND SHAPES */
+        .blob {
             position: absolute;
-            filter: blur(50px);
+            border-radius: 50%;
+            filter: blur(80px);
             z-index: -1;
             opacity: 0.6;
         }
-        .blob-1 { top: 10%; left: 10%; width: 300px; height: 300px; background: #E0F2FE; animation: float 10s infinite; border-radius: 50%; }
-        .blob-2 { bottom: 20%; right: 10%; width: 400px; height: 400px; background: #F0FDF4; animation: float-delayed 12s infinite; border-radius: 40% 60% 70% 30%; }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #E0F2FE; animation: float 10s infinite; }
+        .blob-2 { bottom: 10%; right: -5%; width: 400px; height: 400px; background: #FEF3C7; animation: float-delayed 12s infinite; }
 
-        /* SCROLL REVEAL CLASS */
+        /* SCROLL ANIMATION CLASSES */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.8s ease-out;
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
         }
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* CUSTOM SCROLLBAR */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #F1F5F9; }
-        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 5px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
-
-        /* LEETCODE CROP HACK */
-        .leetcode-crop {
+        /* LEETCODE CROP MAGIC */
+        .leetcode-wrapper {
+            width: 100%;
+            height: 160px;
             overflow: hidden;
+            position: relative;
             border-radius: 0.75rem;
         }
-        .leetcode-crop img {
-            /* Shift image to show only the right side (recent weeks) */
+        .leetcode-wrapper img {
+            /* This zooms into the image and shifts it left to show only the end (recent weeks) */
+            position: absolute;
+            right: 0;
+            height: 100%;
+            max-width: none; /* Allow image to overflow */
+            width: 350%; /* Zoom factor */
             object-fit: cover;
-            object-position: 80% center; 
-            width: 120%; /* Zoom in slightly */
-            margin-left: -20px;
+            object-position: 100% center; /* Focus on right side */
+        }
+
+        /* BUTTON GLOW */
+        .btn-glow:hover {
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
         }
     </style>
 </head>
-<body class="antialiased selection:bg-primary/20 selection:text-primary">
+<body class="antialiased selection:bg-accent selection:text-white">
 
     <canvas id="effects-canvas"></canvas>
-    
-    <div id="cursor-glow" class="cursor-glow"></div>
 
-    <div class="shape-blob blob-1"></div>
-    <div class="shape-blob blob-2"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
 
-    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm transition-all duration-300">
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <a href="#" class="font-mono font-bold text-xl tracking-tighter text-primary hover:scale-105 transition-transform">&lt;Eswardas_K /&gt;</a>
-            <div class="flex gap-8 text-sm font-semibold text-secondary">
+            <div class="flex gap-6 text-sm font-semibold text-secondary">
                 <a href="#stats" class="hover:text-primary transition hidden sm:block">Stats</a>
                 <a href="#skills" class="hover:text-primary transition hidden sm:block">Skills</a>
                 <a href="#projects" class="hover:text-primary transition hidden sm:block">Projects</a>
-                <a href="resume.pdf" target="_blank" class="text-white bg-primary px-5 py-2 rounded-full hover:bg-sky-700 transition shadow-lg hover:shadow-primary/30">Resume</a>
+                <a href="resume.pdf" target="_blank" class="text-white bg-primary px-5 py-2 rounded-full hover:bg-sky-600 transition shadow-lg btn-glow">Resume</a>
             </div>
         </div>
     </nav>
 
-    <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto text-center z-10">
-            <div class="relative inline-block mb-8 group reveal">
-                <div class="absolute inset-0 bg-primary blur-2xl opacity-20 group-hover:opacity-40 transition duration-500 rounded-full"></div>
-                <img id="gh-avatar" src="" alt="Profile" class="relative w-32 h-32 rounded-full border-4 border-white shadow-2xl object-cover transform group-hover:scale-105 transition duration-500">
-                <div class="absolute bottom-1 right-1 w-6 h-6 bg-accent rounded-full border-4 border-white animate-pulse" title="Open to Work"></div>
+    <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative">
+        <div class="max-w-4xl mx-auto text-center z-10">
+            <div class="relative inline-block mb-8 reveal group">
+                <div class="absolute inset-0 bg-gradient-to-tr from-primary to-accent rounded-full blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                <img id="gh-avatar" src="" alt="Profile" class="relative w-36 h-36 rounded-full border-4 border-white shadow-2xl object-cover">
+                <div class="absolute bottom-2 right-2 w-6 h-6 bg-green-500 rounded-full border-4 border-white animate-pulse" title="Open to Work"></div>
             </div>
             
-            <p class="text-primary font-mono font-bold mb-4 tracking-wide reveal">HELLO, I AM</p>
-            <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-6 text-text reveal">
-                Eswardas K Nair
+            <p class="text-primary font-mono font-bold mb-4 tracking-wider reveal">HELLO, I AM</p>
+            <h1 class="text-5xl md:text-8xl font-extrabold tracking-tight mb-6 text-text reveal">
+                Eswardas K Nair<span class="text-primary">.</span>
             </h1>
             <h2 class="text-xl md:text-3xl text-secondary font-medium mb-10 max-w-3xl mx-auto leading-relaxed reveal">
-                Backend Engineer crafting <span class="text-primary underline decoration-wavy decoration-primary/30">Scalable Architecture</span> with Django. 
+                Backend Engineer crafting <span class="text-primary underline decoration-2 decoration-primary/30 underline-offset-4">Scalable Architecture</span> with Django. 
                 <br>I turn complex data into lightning-fast APIs.
             </h2>
             
             <div class="flex justify-center gap-6 mb-12 reveal">
-                <a href="tel:6282393871" class="group relative px-8 py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all border border-slate-100 flex items-center gap-3 overflow-hidden">
+                <a href="tel:6282393871" class="group relative flex items-center gap-3 px-8 py-4 bg-white rounded-2xl shadow-lg border border-slate-100 hover:border-primary/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                     <div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <i class="fas fa-phone-alt text-primary text-xl group-hover:rotate-12 transition-transform"></i>
-                    <span class="font-bold text-slate-700">Call Me</span>
+                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary group-hover:scale-110 transition"><i class="fas fa-phone-alt"></i></div>
+                    <span class="font-bold text-slate-700 z-10">Call Me</span>
                 </a>
-                <a href="mailto:esdkncc@gmail.com" class="group relative px-8 py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all border border-slate-100 flex items-center gap-3 overflow-hidden">
+                
+                <a href="mailto:esdkncc@gmail.com" class="group relative flex items-center gap-3 px-8 py-4 bg-white rounded-2xl shadow-lg border border-slate-100 hover:border-red-400/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                     <div class="absolute inset-0 bg-red-50 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <i class="fas fa-envelope text-red-500 text-xl group-hover:scale-110 transition-transform"></i>
-                    <span class="font-bold text-slate-700">Email Me</span>
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-500 group-hover:scale-110 transition"><i class="fas fa-envelope"></i></div>
+                    <span class="font-bold text-slate-700 z-10">Email Me</span>
                 </a>
             </div>
 
-            <div class="flex justify-center gap-8 text-2xl text-secondary reveal">
-                <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-black hover:-translate-y-2 transition-all duration-300"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-600 hover:-translate-y-2 transition-all duration-300"><i class="fab fa-linkedin"></i></a>
-                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="hover:text-yellow-500 hover:-translate-y-2 transition-all duration-300"><i class="fas fa-code"></i></a>
+            <div class="flex justify-center gap-8 text-2xl text-slate-400 reveal">
+                <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-slate-900 hover:scale-110 transition"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-600 hover:scale-110 transition"><i class="fab fa-linkedin"></i></a>
+                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="hover:text-yellow-500 hover:scale-110 transition"><i class="fas fa-code"></i></a>
+                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="hover:text-green-600 hover:scale-110 transition"><i class="fab fa-hackerrank"></i></a>
             </div>
         </div>
     </section>
@@ -178,53 +172,54 @@
     <section id="stats" class="py-24 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
             <div class="flex items-center gap-3 mb-12 reveal">
-                <div class="p-3 bg-white rounded-lg shadow-sm border border-slate-100 text-primary">
-                    <i class="fas fa-chart-pie text-xl"></i>
-                </div>
+                <i class="fas fa-chart-line text-primary text-2xl"></i>
                 <h2 class="text-3xl font-bold text-text">Live Metrics</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <div class="reveal bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-2xl hover:shadow-primary/10 transition duration-500 group">
+                <div class="bg-white border border-slate-100 rounded-3xl p-6 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition duration-500 group reveal">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-lg text-slate-800"><i class="fas fa-code text-yellow-500 mr-2"></i> LeetCode Activity</h3>
-                        <span class="text-xs font-mono text-secondary bg-slate-100 px-2 py-1 rounded">Last 12 Weeks</span>
+                        <div class="flex items-center gap-2">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/LeetCode_logo_black.png" class="w-6 opacity-70">
+                            <h3 class="font-bold text-lg text-slate-700">Recent Activity</h3>
+                        </div>
+                        <span class="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">Last 12 Weeks</span>
                     </div>
-                    <div class="h-40 overflow-hidden relative rounded-lg border border-slate-100">
+                    
+                    <div class="leetcode-wrapper bg-slate-50 border border-slate-100 rounded-xl">
                         <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
-                            <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Plus%20Jakarta%20Sans&ext=heatmap" 
-                                 alt="LeetCode Stats" 
-                                 class="w-[140%] max-w-none h-full object-cover object-right opacity-90 group-hover:opacity-100 transition duration-300"
-                                 style="margin-left: -40%;"> 
+                            <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Plus%20Jakarta%20Sans&ext=heatmap" alt="LeetCode Stats">
                         </a>
                     </div>
                 </div>
 
-                <div class="reveal bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-2xl hover:shadow-green-500/10 transition duration-500 flex flex-col justify-between h-full group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
+                <div class="bg-white border border-slate-100 rounded-3xl p-8 shadow-xl shadow-slate-200/50 hover:shadow-2xl transition duration-500 relative overflow-hidden group reveal">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
                     
-                    <div class="flex justify-between items-start relative z-10">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-green-50 p-3 rounded-xl text-green-600 shadow-sm">
-                                <i class="fab fa-hackerrank text-3xl"></i>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-green-100 p-3 rounded-2xl text-green-600">
+                                    <i class="fab fa-hackerrank text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-800 text-xl">HackerRank</h3>
+                                    <p class="text-sm text-secondary font-mono">@24MCA13</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 class="font-bold text-text text-lg">HackerRank</h3>
-                                <p class="text-xs text-secondary font-mono">@24MCA13</p>
-                            </div>
+                            <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-slate-300 hover:text-green-600 transition"><i class="fas fa-external-link-alt"></i></a>
                         </div>
-                        <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-slate-400 hover:text-green-600 transition"><i class="fas fa-external-link-alt"></i></a>
-                    </div>
 
-                    <div class="space-y-3 mt-6 relative z-10">
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 group-hover:border-green-200 transition">
-                            <span class="text-sm text-slate-600 font-medium">Python</span>
-                            <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i> Gold</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 group-hover:border-green-200 transition">
-                            <span class="text-sm text-slate-600 font-medium">SQL</span>
-                            <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i> Gold</span>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100 group-hover:border-green-200 transition">
+                                <span class="text-slate-600 font-medium"><i class="fab fa-python mr-2 text-secondary"></i>Python</span>
+                                <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star mr-1"></i> Gold</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-xl border border-slate-100 group-hover:border-green-200 transition">
+                                <span class="text-slate-600 font-medium"><i class="fas fa-database mr-2 text-secondary"></i>SQL</span>
+                                <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full shadow-sm"><i class="fas fa-star mr-1"></i> Gold</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -233,20 +228,17 @@
         </div>
     </section>
 
-    <section id="skills" class="py-24 px-6 bg-white relative">
-        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
-        
-        <div class="max-w-6xl mx-auto">
+    <section id="skills" class="py-24 px-6 relative bg-white">
+        <div class="absolute inset-0 bg-slate-50/50 skew-y-1 transform origin-top-left z-0"></div>
+        <div class="max-w-6xl mx-auto relative z-10">
             <div class="flex items-center gap-3 mb-12 reveal">
-                <div class="p-3 bg-slate-50 rounded-lg text-primary shadow-sm border border-slate-100">
-                    <i class="fas fa-microchip text-xl"></i>
-                </div>
+                <i class="fas fa-microchip text-primary text-2xl"></i>
                 <h2 class="text-3xl font-bold text-text">Technical Arsenal</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
                 <div class="reveal">
-                    <h3 class="text-secondary font-bold text-sm mb-6 uppercase tracking-widest border-l-4 border-primary pl-3">Tech Stack</h3>
+                    <h3 class="text-secondary font-bold text-xs mb-6 uppercase tracking-widest pl-3 border-l-4 border-primary">Tech Stack</h3>
                     <div class="flex flex-wrap gap-3">
                         <span class="skill-pill border-blue-200 text-blue-600 bg-blue-50"><i class="fab fa-python mr-2"></i>Python 3</span>
                         <span class="skill-pill border-green-200 text-green-600 bg-green-50"><i class="fas fa-layer-group mr-2"></i>Django</span>
@@ -259,27 +251,27 @@
                 </div>
 
                 <div class="reveal">
-                    <h3 class="text-secondary font-bold text-sm mb-6 uppercase tracking-widest border-l-4 border-accent pl-3">Mindset</h3>
+                    <h3 class="text-secondary font-bold text-xs mb-6 uppercase tracking-widest pl-3 border-l-4 border-accent">Mindset</h3>
                     <div class="space-y-4">
                         <div class="skill-row group">
-                            <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500 group-hover:scale-110 transition"><i class="fas fa-bolt"></i></div>
+                            <div class="icon-box bg-yellow-50 text-yellow-500 group-hover:scale-110 transition"><i class="fas fa-bolt"></i></div>
                             <div>
-                                <h4 class="text-text text-sm font-bold">First-Principles Thinking</h4>
+                                <h4 class="text-slate-800 font-bold">First-Principles Thinking</h4>
                                 <p class="text-xs text-secondary mt-1">Deconstructing problems to basics.</p>
                             </div>
                         </div>
                         <div class="skill-row group">
-                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition"><i class="fas fa-check-double"></i></div>
+                            <div class="icon-box bg-green-50 text-green-500 group-hover:scale-110 transition"><i class="fas fa-check-double"></i></div>
                             <div>
-                                <h4 class="text-text text-sm font-bold">End-to-End Ownership</h4>
+                                <h4 class="text-slate-800 font-bold">End-to-End Ownership</h4>
                                 <p class="text-xs text-secondary mt-1">From schema design to deployment.</p>
                             </div>
                         </div>
                         <div class="skill-row group">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition"><i class="fas fa-sync-alt"></i></div>
+                            <div class="icon-box bg-blue-50 text-blue-500 group-hover:scale-110 transition"><i class="fas fa-sync-alt"></i></div>
                             <div>
-                                <h4 class="text-text text-sm font-bold">Rapid Adaptation</h4>
-                                <p class="text-xs text-secondary mt-1">Learning new tools on the fly.</p>
+                                <h4 class="text-slate-800 font-bold">Rapid Tech Adaptation</h4>
+                                <p class="text-xs text-secondary mt-1">Mastering new tools on the fly.</p>
                             </div>
                         </div>
                     </div>
@@ -291,31 +283,25 @@
     <section id="projects" class="py-24 px-6 relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="flex justify-between items-end mb-12 reveal">
-                <div>
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 bg-white rounded-lg text-primary shadow-sm border border-slate-100">
-                            <i class="fas fa-project-diagram text-xl"></i>
-                        </div>
-                        <h2 class="text-3xl font-bold text-text">Featured Projects</h2>
-                    </div>
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-project-diagram text-primary text-2xl"></i>
+                    <h2 class="text-3xl font-bold text-text">Featured Projects</h2>
                 </div>
-                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-primary font-bold hover:underline decoration-2 underline-offset-4 text-sm transition">View All <i class="fas fa-arrow-right ml-1"></i></a>
+                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-primary font-bold hover:text-sky-700 transition flex items-center gap-2 group">View All <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></a>
             </div>
 
             <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
-                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
-                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
+                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
+                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
+                <div class="h-64 bg-slate-200 rounded-2xl animate-pulse"></div>
             </div>
         </div>
     </section>
 
-    <section id="certifications" class="py-24 px-6 bg-white">
+    <section id="certifications" class="py-24 px-6 bg-white border-t border-slate-100">
         <div class="max-w-4xl mx-auto">
             <div class="flex items-center gap-3 mb-12 reveal">
-                <div class="p-3 bg-slate-50 rounded-lg text-primary shadow-sm border border-slate-100">
-                    <i class="fas fa-certificate text-xl"></i>
-                </div>
+                <i class="fas fa-certificate text-primary text-2xl"></i>
                 <h2 class="text-3xl font-bold text-text">Certifications</h2>
             </div>
             
@@ -323,28 +309,34 @@
         </div>
     </section>
 
-    <footer class="py-10 text-center border-t border-slate-200 bg-slate-50">
-        <p class="text-secondary text-sm font-medium">&copy; <span id="year"></span> Eswardas K Nair. Crafted with <i class="fas fa-heart text-red-400 mx-1"></i> & Python.</p>
+    <footer class="py-10 text-center bg-slate-50 border-t border-slate-200">
+        <p class="text-slate-500 text-sm font-mono">&copy; <span id="year"></span> Eswardas K Nair. Built for Performance.</p>
     </footer>
 
     <style>
         .skill-pill {
-            @apply px-4 py-2 rounded-full border text-sm font-semibold hover:-translate-y-1 transition-transform duration-300 cursor-default shadow-sm;
+            @apply px-4 py-2 rounded-lg border text-sm font-semibold hover:-translate-y-1 transition-transform duration-300 cursor-default shadow-sm hover:shadow-md;
         }
         .skill-row {
             @apply flex items-center gap-4 p-4 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-slate-100;
         }
+        .icon-box {
+            @apply w-12 h-12 rounded-full flex items-center justify-center text-lg;
+        }
     </style>
 
     <script>
-        // 1. DYNAMIC SMOKE & HEATMAP EFFECTS
+        // -----------------------------------------------------
+        // 1. COMPLEX PHYSICS ENGINE (HEATMAP + SMOKE)
+        // -----------------------------------------------------
         const canvas = document.getElementById('effects-canvas');
         const ctx = canvas.getContext('2d');
-        const glow = document.getElementById('cursor-glow');
-
+        
         let width, height;
         let particles = [];
+        let mouse = { x: -100, y: -100 };
 
+        // Resize Canvas
         function resize() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
@@ -352,56 +344,102 @@
         window.addEventListener('resize', resize);
         resize();
 
-        class Particle {
+        // Track Mouse
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            
+            // Spawn Particles on Move
+            // 1. Heat Particles (Trail)
+            for(let i=0; i<2; i++) {
+                particles.push(new HeatParticle(mouse.x, mouse.y));
+            }
+            // 2. Smoke Particles (Rising)
+            if(Math.random() > 0.5) {
+                particles.push(new SmokeParticle(mouse.x, mouse.y));
+            }
+        });
+
+        // Heat Particle (Red -> Orange -> Yellow -> Fade)
+        class HeatParticle {
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.vx = (Math.random() - 0.5) * 1;
-                this.vy = (Math.random() - 1) * 2; // Move up
-                this.size = Math.random() * 5 + 1;
-                this.alpha = 0.5;
+                this.size = Math.random() * 20 + 10; // Large blobs
+                this.life = 1.0; // Life starts at 100%
+                this.decay = Math.random() * 0.005 + 0.002; // Very slow decay for lingering effect
+                this.color = '';
             }
+            
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.alpha -= 0.01;
-                this.size *= 0.96;
+                this.life -= this.decay;
+                // Determine color based on life
+                if (this.life > 0.7) {
+                    this.color = `rgba(239, 68, 68, ${this.life * 0.2})`; // Red (low opacity)
+                } else if (this.life > 0.4) {
+                    this.color = `rgba(245, 158, 11, ${this.life * 0.2})`; // Orange
+                } else {
+                    this.color = `rgba(252, 211, 77, ${this.life * 0.1})`; // Yellow
+                }
             }
+            
             draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = '#94A3B8'; // Smoke color (Slate)
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
                 ctx.fill();
             }
         }
 
-        // Mouse Tracking
-        window.addEventListener('mousemove', (e) => {
-            // Smoke
-            for(let i=0; i<3; i++) {
-                particles.push(new Particle(e.clientX, e.clientY));
+        // Smoke Particle (Rising Gray)
+        class SmokeParticle {
+            constructor(x, y) {
+                this.x = x + (Math.random() - 0.5) * 10;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = Math.random() * -2 - 1; // Always moves up
+                this.size = Math.random() * 3 + 2;
+                this.life = 1.0;
+                this.decay = 0.02; // Fades faster than heat
             }
-            // Heatmap Glow Movement
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
 
-        function animateEffects() {
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+                this.size += 0.1; // Expands slightly
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                // Dark gray for smoke against white bg
+                ctx.fillStyle = `rgba(100, 116, 139, ${this.life * 0.3})`; 
+                ctx.fill();
+            }
+        }
+
+        // Animation Loop
+        function animate() {
             ctx.clearRect(0, 0, width, height);
+            
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
-                if (particles[i].alpha <= 0) {
+                
+                if (particles[i].life <= 0) {
                     particles.splice(i, 1);
                     i--;
                 }
             }
-            requestAnimationFrame(animateEffects);
+            requestAnimationFrame(animate);
         }
-        animateEffects();
+        animate();
 
-        // 2. SCROLL REVEAL ANIMATION
+
+        // -----------------------------------------------------
+        // 2. SCROLL REVEAL ANIMATION (Motion UI)
+        // -----------------------------------------------------
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
@@ -412,35 +450,35 @@
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // 3. DATA FETCHING (PROJECTS & PROFILE)
+
+        // -----------------------------------------------------
+        // 3. CONTENT LOGIC
+        // -----------------------------------------------------
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
         // Fetch Avatar
         fetch(`https://api.github.com/users/${username}`)
             .then(res => res.json())
-            .then(data => { 
-                if(data.avatar_url) {
-                    document.getElementById('gh-avatar').src = data.avatar_url; 
-                }
-            })
-            .catch(err => console.log(err));
+            .then(data => { if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; });
 
+        // Projects Data
         const customContent = {
             "ScholarSync": {
-                desc: "Academic collaboration platform enabling students to synchronize activities and share docs.",
+                desc: "A centralized academic collaboration platform enabling daily synchronization of activities and docs.",
                 tech: "Django • SQL"
             },
             "LMS": {
-                desc: "High-performance library backend utilizing DRF for secure, optimized inventory APIs.",
+                desc: "High-performance backend system utilizing DRF for secure, optimized library inventory APIs.",
                 tech: "DRF • PostgreSQL"
             },
             "Office-Employee-Management-System": {
-                desc: "Digitized employee records system with hierarchy management and dashboard analytics.",
+                desc: "Organizational tool digitizing employee records and hierarchies with a responsive dashboard.",
                 tech: "Django • Bootstrap"
             }
         };
 
+        // Render Projects
         async function fetchProjects() {
             const grid = document.getElementById('projects-grid');
             try {
@@ -461,31 +499,31 @@
                     const language = custom.tech || repo.language || "Python";
 
                     const card = document.createElement('div');
-                    card.className = 'reveal bg-white border border-slate-100 rounded-2xl p-6 flex flex-col hover:-translate-y-2 transition duration-300 hover:shadow-2xl hover:shadow-primary/5 group h-full relative overflow-hidden';
+                    card.className = 'bg-white border border-slate-100 rounded-3xl p-6 flex flex-col hover:-translate-y-2 transition duration-300 hover:shadow-xl hover:shadow-primary/10 group h-full reveal relative overflow-hidden';
                     
                     card.innerHTML = `
-                        <div class="absolute top-0 left-0 w-1 h-full bg-primary transform scale-y-0 group-hover:scale-y-100 transition duration-300 origin-top"></div>
+                        <div class="absolute top-0 left-0 w-2 h-full bg-primary transform scale-y-0 group-hover:scale-y-100 transition duration-300"></div>
                         <div class="flex justify-between items-start mb-4">
-                            <div class="p-3 bg-slate-50 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition duration-300">
+                            <div class="bg-primary/10 p-3 rounded-xl text-primary group-hover:bg-primary group-hover:text-white transition">
                                 <i class="fas fa-folder text-xl"></i>
                             </div>
                             <div class="flex items-center gap-4">
-                                <span class="text-xs text-secondary font-mono font-bold flex items-center gap-1">
+                                <span class="text-xs text-secondary font-bold flex items-center gap-1">
                                     <i class="fas fa-star text-yellow-400"></i> ${repo.stargazers_count}
                                 </span>
                                 <a href="${repo.html_url}" target="_blank" class="text-secondary hover:text-primary transition"><i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
-                        <h3 class="font-bold text-xl mb-3 text-text font-sans">${repo.name}</h3>
+                        <h3 class="font-bold text-lg mb-3 text-slate-800 font-sans">${repo.name}</h3>
                         <p class="text-secondary text-sm mb-6 flex-grow leading-relaxed font-medium">${description}</p>
                         
-                        <div class="mt-auto pt-4 border-t border-slate-50 flex items-center gap-2 text-xs text-primary font-bold font-mono uppercase tracking-wider">
+                        <div class="mt-auto pt-4 border-t border-slate-50 flex items-center gap-2 text-xs text-primary font-bold font-mono tracking-wider">
                             <span class="w-2 h-2 rounded-full bg-primary"></span>
                             ${language}
                         </div>
                     `;
                     grid.appendChild(card);
-                    observer.observe(card); // Add animation to dynamic elements
+                    observer.observe(card);
                 });
 
             } catch (error) {
@@ -494,7 +532,7 @@
             }
         }
 
-        // 4. Render Certifications
+        // Render Certifications
         const certifications = [
             {
                 title: "Software Engineer Intern",
@@ -504,7 +542,7 @@
             },
             {
                 title: "Data Analytics Job Simulation",
-                issuer: "Deloitte Australia (Forage)",
+                issuer: "Deloitte Australia",
                 icon: "fas fa-briefcase",
                 color: "text-blue-600 bg-blue-50"
             },
@@ -525,12 +563,12 @@
         function renderCerts() {
             const container = document.getElementById('certs-grid');
             container.innerHTML = certifications.map(cert => `
-                <div class="reveal bg-white border border-slate-100 p-5 rounded-xl hover:shadow-lg transition duration-300 flex items-center gap-5 hover:border-primary/30 group">
+                <div class="bg-white border border-slate-100 p-5 rounded-2xl hover:shadow-lg transition duration-300 flex items-center gap-5 hover:border-primary/30 group reveal">
                     <div class="${cert.color} p-4 rounded-xl text-xl shadow-sm group-hover:scale-110 transition">
                         <i class="${cert.icon}"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-text text-lg">${cert.title}</h3>
+                        <h3 class="font-bold text-slate-800 text-lg">${cert.title}</h3>
                         <p class="text-sm text-secondary font-medium">${cert.issuer}</p>
                     </div>
                 </div>
