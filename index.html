@@ -73,8 +73,9 @@
 
     <section class="min-h-screen flex flex-col justify-center px-6 pt-16">
         <div class="max-w-4xl mx-auto text-center animate-fade-in">
+            
             <div class="relative inline-block mb-6">
-                <img src="profile.jpg" alt="Profile" class="w-32 h-32 rounded-full border-2 border-primary/50 shadow-[0_0_30px_rgba(56,189,248,0.2)] object-cover">
+                <img id="gh-avatar" src="" alt="Profile" class="w-32 h-32 rounded-full border-2 border-primary/50 shadow-[0_0_30px_rgba(56,189,248,0.2)] object-cover bg-slate-800">
                 <div class="absolute bottom-0 right-1 w-6 h-6 bg-accent rounded-full border-4 border-bg" title="Open to Work"></div>
             </div>
             
@@ -250,7 +251,15 @@
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // NOTE: Avatar is now static (profile.jpg). No fetch needed for avatar.
+        // 1. Fetch Avatar (Restored GitHub Fetch)
+        fetch(`https://api.github.com/users/${username}`)
+            .then(res => res.json())
+            .then(data => { 
+                if(data.avatar_url) {
+                    document.getElementById('gh-avatar').src = data.avatar_url; 
+                }
+            })
+            .catch(err => console.log("Avatar fetch failed", err));
 
         // 2. Projects Logic
         const customContent = {
