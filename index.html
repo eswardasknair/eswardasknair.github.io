@@ -6,38 +6,36 @@
     <title>Eswardas K Nair | Python Backend Engineer</title>
     <meta name="description" content="Portfolio of Eswardas K Nair - Python, Django, SQL & Backend Development">
     
-    <!-- Google Fonts: JetBrains Mono (Code) & Inter (Body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS (Modern Styling) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        bg: '#0B1120',      /* Deep Backend Blue/Black */
-                        card: '#111827',    /* Slightly lighter for cards */
-                        primary: '#38BDF8', /* Python/Django Blue */
-                        secondary: '#94A3B8',
-                        accent: '#10B981'   /* Success Green */
+                        bg: '#F8FAFC',       /* Light Slate Background */
+                        surface: '#FFFFFF',  /* Pure White Cards */
+                        primary: '#0284C7',  /* Sky Blue 600 */
+                        secondary: '#64748B',/* Slate 500 */
+                        text: '#0F172A',     /* Slate 900 */
+                        accent: '#10B981'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
                         mono: ['JetBrains Mono', 'monospace'],
                     },
                     animation: {
-                        'fade-in': 'fadeIn 1s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 8s ease-in-out infinite 1s',
                     },
                     keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'translateY(10px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
                         }
                     }
                 }
@@ -46,162 +44,242 @@
     </script>
     
     <style>
-        body { background-color: #0B1120; color: #F8FAFC; }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0B1120; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        
-        .gradient-text {
-            background: linear-gradient(to right, #38BDF8, #818CF8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        body { 
+            background-color: #F8FAFC; 
+            color: #0F172A; 
+            cursor: default; /* We will add custom effects */
+            overflow-x: hidden;
+        }
+
+        /* 1. SMOKE & HEATMAP CANVAS LAYER */
+        #effects-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 9999;
+        }
+
+        /* 2. HEATMAP GLOW FOLLOWER */
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 0;
+            transition: width 0.2s, height 0.2s;
+            mix-blend-mode: multiply;
+        }
+
+        /* 3. FLOATING SHAPES */
+        .shape-blob {
+            position: absolute;
+            filter: blur(50px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .blob-1 { top: 10%; left: 10%; width: 300px; height: 300px; background: #E0F2FE; animation: float 10s infinite; border-radius: 50%; }
+        .blob-2 { bottom: 20%; right: 10%; width: 400px; height: 400px; background: #F0FDF4; animation: float-delayed 12s infinite; border-radius: 40% 60% 70% 30%; }
+
+        /* SCROLL REVEAL CLASS */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* CUSTOM SCROLLBAR */
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #F1F5F9; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+
+        /* LEETCODE CROP HACK */
+        .leetcode-crop {
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+        .leetcode-crop img {
+            /* Shift image to show only the right side (recent weeks) */
+            object-fit: cover;
+            object-position: 80% center; 
+            width: 120%; /* Zoom in slightly */
+            margin-left: -20px;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-primary selection:text-bg">
+<body class="antialiased selection:bg-primary/20 selection:text-primary">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-bg/90 backdrop-blur-md border-b border-slate-800">
+    <canvas id="effects-canvas"></canvas>
+    
+    <div id="cursor-glow" class="cursor-glow"></div>
+
+    <div class="shape-blob blob-1"></div>
+    <div class="shape-blob blob-2"></div>
+
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-slate-200 shadow-sm transition-all duration-300">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="#" class="font-mono font-bold text-lg tracking-tighter text-primary hover:text-white transition">&lt;Eswardas_K /&gt;</a>
-            <div class="flex gap-6 text-sm font-medium text-secondary">
-                <a href="#stats" class="hover:text-white transition hidden sm:block">Stats</a>
-                <a href="#skills" class="hover:text-white transition hidden sm:block">Skills</a>
-                <a href="#projects" class="hover:text-white transition hidden sm:block">Projects</a>
-                <!-- IMPORTANT: Rename your resume file to 'resume.pdf' and put it in the same folder -->
-                <a href="resume.pdf" target="_blank" class="text-primary border border-primary px-4 py-1.5 rounded hover:bg-primary hover:text-bg transition font-mono text-xs">RESUME.pdf</a>
+            <a href="#" class="font-mono font-bold text-xl tracking-tighter text-primary hover:scale-105 transition-transform">&lt;Eswardas_K /&gt;</a>
+            <div class="flex gap-8 text-sm font-semibold text-secondary">
+                <a href="#stats" class="hover:text-primary transition hidden sm:block">Stats</a>
+                <a href="#skills" class="hover:text-primary transition hidden sm:block">Skills</a>
+                <a href="#projects" class="hover:text-primary transition hidden sm:block">Projects</a>
+                <a href="resume.pdf" target="_blank" class="text-white bg-primary px-5 py-2 rounded-full hover:bg-sky-700 transition shadow-lg hover:shadow-primary/30">Resume</a>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="min-h-screen flex flex-col justify-center px-6 pt-16">
-        <div class="max-w-4xl mx-auto text-center animate-fade-in">
-            <!-- Dynamic Avatar -->
-            <div class="relative inline-block mb-6">
-                <img id="gh-avatar" src="" alt="Profile" class="w-28 h-28 rounded-full border-2 border-primary/50 shadow-[0_0_30px_rgba(56,189,248,0.2)]">
-                <div class="absolute bottom-0 right-0 w-6 h-6 bg-accent rounded-full border-4 border-bg" title="Open to Work"></div>
+    <section class="min-h-screen flex flex-col justify-center px-6 pt-16 relative overflow-hidden">
+        <div class="max-w-5xl mx-auto text-center z-10">
+            <div class="relative inline-block mb-8 group reveal">
+                <div class="absolute inset-0 bg-primary blur-2xl opacity-20 group-hover:opacity-40 transition duration-500 rounded-full"></div>
+                <img id="gh-avatar" src="" alt="Profile" class="relative w-32 h-32 rounded-full border-4 border-white shadow-2xl object-cover transform group-hover:scale-105 transition duration-500">
+                <div class="absolute bottom-1 right-1 w-6 h-6 bg-accent rounded-full border-4 border-white animate-pulse" title="Open to Work"></div>
             </div>
             
-            <p class="text-primary font-mono mb-4">Hello, I am</p>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-white">
-                Eswardas K Nair<span class="text-primary">.</span>
+            <p class="text-primary font-mono font-bold mb-4 tracking-wide reveal">HELLO, I AM</p>
+            <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-6 text-text reveal">
+                Eswardas K Nair
             </h1>
-            <h2 class="text-xl md:text-2xl text-secondary font-light mb-8 max-w-2xl mx-auto">
-                Backend Engineer specializing in <span class="text-white font-semibold">Django & Scalable Architecture</span>. 
-                I transform complex data into optimized API responses.
+            <h2 class="text-xl md:text-3xl text-secondary font-medium mb-10 max-w-3xl mx-auto leading-relaxed reveal">
+                Backend Engineer crafting <span class="text-primary underline decoration-wavy decoration-primary/30">Scalable Architecture</span> with Django. 
+                <br>I turn complex data into lightning-fast APIs.
             </h2>
             
-            <!-- Social Links -->
-            <div class="flex justify-center gap-8 text-2xl text-secondary mb-12">
-                <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-white hover:-translate-y-1 transition"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-500 hover:-translate-y-1 transition"><i class="fab fa-linkedin"></i></a>
-                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="hover:text-yellow-500 hover:-translate-y-1 transition"><i class="fas fa-code"></i></a>
-                <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="hover:text-green-500 hover:-translate-y-1 transition"><i class="fab fa-hackerrank"></i></a>
+            <div class="flex justify-center gap-6 mb-12 reveal">
+                <a href="tel:6282393871" class="group relative px-8 py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all border border-slate-100 flex items-center gap-3 overflow-hidden">
+                    <div class="absolute inset-0 bg-primary/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <i class="fas fa-phone-alt text-primary text-xl group-hover:rotate-12 transition-transform"></i>
+                    <span class="font-bold text-slate-700">Call Me</span>
+                </a>
+                <a href="mailto:esdkncc@gmail.com" class="group relative px-8 py-3 bg-white rounded-xl shadow-lg hover:shadow-xl transition-all border border-slate-100 flex items-center gap-3 overflow-hidden">
+                    <div class="absolute inset-0 bg-red-50 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                    <i class="fas fa-envelope text-red-500 text-xl group-hover:scale-110 transition-transform"></i>
+                    <span class="font-bold text-slate-700">Email Me</span>
+                </a>
+            </div>
+
+            <div class="flex justify-center gap-8 text-2xl text-secondary reveal">
+                <a href="https://github.com/eswardasknair" target="_blank" class="hover:text-black hover:-translate-y-2 transition-all duration-300"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/eswardask/" target="_blank" class="hover:text-blue-600 hover:-translate-y-2 transition-all duration-300"><i class="fab fa-linkedin"></i></a>
+                <a href="https://leetcode.com/u/Eswardas_K/" target="_blank" class="hover:text-yellow-500 hover:-translate-y-2 transition-all duration-300"><i class="fas fa-code"></i></a>
             </div>
         </div>
     </section>
 
-    <!-- Real-Time Stats Dashboard -->
-    <section id="stats" class="py-20 bg-card border-y border-slate-800">
+    <section id="stats" class="py-24 relative z-10">
         <div class="max-w-6xl mx-auto px-6">
-            <div class="flex items-center gap-3 mb-10">
-                <i class="fas fa-terminal text-primary text-xl"></i>
-                <h2 class="text-2xl font-bold text-white">Live Metrics</h2>
+            <div class="flex items-center gap-3 mb-12 reveal">
+                <div class="p-3 bg-white rounded-lg shadow-sm border border-slate-100 text-primary">
+                    <i class="fas fa-chart-pie text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-text">Live Metrics</h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- LeetCode Heatmap -->
-                <div class="bg-bg border border-slate-800 rounded-xl p-1 hover:border-primary/50 transition duration-300 shadow-lg">
-                    <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
-                        <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=dark&font=Inter&ext=heatmap" alt="LeetCode Stats" class="w-full opacity-90 hover:opacity-100 transition">
-                    </a>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="reveal bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-2xl hover:shadow-primary/10 transition duration-500 group">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-slate-800"><i class="fas fa-code text-yellow-500 mr-2"></i> LeetCode Activity</h3>
+                        <span class="text-xs font-mono text-secondary bg-slate-100 px-2 py-1 rounded">Last 12 Weeks</span>
+                    </div>
+                    <div class="h-40 overflow-hidden relative rounded-lg border border-slate-100">
+                        <a href="https://leetcode.com/u/Eswardas_K/" target="_blank">
+                            <img src="https://leetcard.jacoblin.cool/Eswardas_K?theme=light&font=Plus%20Jakarta%20Sans&ext=heatmap" 
+                                 alt="LeetCode Stats" 
+                                 class="w-[140%] max-w-none h-full object-cover object-right opacity-90 group-hover:opacity-100 transition duration-300"
+                                 style="margin-left: -40%;"> 
+                        </a>
+                    </div>
                 </div>
 
-                <!-- GitHub Stats -->
-                <div class="bg-bg border border-slate-800 rounded-xl p-1 hover:border-primary/50 transition duration-300 shadow-lg">
-                    <a href="https://github.com/eswardasknair" target="_blank">
-                        <img src="https://github-readme-stats.vercel.org/api?username=eswardasknair&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&include_all_commits=true" alt="GitHub Stats" class="w-full h-full object-cover opacity-90 hover:opacity-100 transition">
-                    </a>
-                </div>
-
-                <!-- HackerRank Visual Badge -->
-                <div class="bg-bg border border-slate-800 rounded-xl p-6 flex flex-col justify-between hover:border-primary/50 transition duration-300 shadow-lg">
-                    <div>
-                        <div class="flex justify-between items-start">
-                            <h3 class="font-bold text-white flex items-center gap-2"><i class="fab fa-hackerrank text-green-500"></i> HackerRank</h3>
-                            <span class="text-xs font-mono text-secondary bg-slate-800 px-2 py-1 rounded">24MCA13</span>
+                <div class="reveal bg-white border border-slate-100 rounded-2xl p-6 hover:shadow-2xl hover:shadow-green-500/10 transition duration-500 flex flex-col justify-between h-full group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-150 duration-700"></div>
+                    
+                    <div class="flex justify-between items-start relative z-10">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-green-50 p-3 rounded-xl text-green-600 shadow-sm">
+                                <i class="fab fa-hackerrank text-3xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-text text-lg">HackerRank</h3>
+                                <p class="text-xs text-secondary font-mono">@24MCA13</p>
+                            </div>
                         </div>
-                        <div class="mt-6 space-y-3">
-                            <!-- Manual Badge Representation -->
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-slate-300">Python</span>
-                                <span class="text-yellow-400"><i class="fas fa-star"></i> Gold Badge</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-slate-300">SQL</span>
-                                <span class="text-yellow-400"><i class="fas fa-star"></i> Gold Badge</span>
-                            </div>
-                            <div class="flex items-center justify-between text-sm">
-                                <span class="text-slate-300">Problem Solving</span>
-                                <span class="text-secondary"><i class="fas fa-star"></i> Intermediate</span>
-                            </div>
+                        <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="text-slate-400 hover:text-green-600 transition"><i class="fas fa-external-link-alt"></i></a>
+                    </div>
+
+                    <div class="space-y-3 mt-6 relative z-10">
+                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 group-hover:border-green-200 transition">
+                            <span class="text-sm text-slate-600 font-medium">Python</span>
+                            <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i> Gold</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100 group-hover:border-green-200 transition">
+                            <span class="text-sm text-slate-600 font-medium">SQL</span>
+                            <span class="text-xs font-bold text-yellow-600 bg-yellow-100 px-3 py-1 rounded-full"><i class="fas fa-star mr-1"></i> Gold</span>
                         </div>
                     </div>
-                    <a href="https://www.hackerrank.com/profile/24MCA13" target="_blank" class="mt-4 text-xs text-primary hover:underline text-right block">Verify Profile &rarr;</a>
                 </div>
+                
             </div>
         </div>
     </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="py-20 px-6">
+    <section id="skills" class="py-24 px-6 bg-white relative">
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+        
         <div class="max-w-6xl mx-auto">
-            <div class="flex items-center gap-3 mb-10">
-                <i class="fas fa-microchip text-primary text-xl"></i>
-                <h2 class="text-2xl font-bold text-white">Technical Arsenal</h2>
+            <div class="flex items-center gap-3 mb-12 reveal">
+                <div class="p-3 bg-slate-50 rounded-lg text-primary shadow-sm border border-slate-100">
+                    <i class="fas fa-microchip text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-text">Technical Arsenal</h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <!-- Hard Skills -->
-                <div>
-                    <h3 class="text-secondary font-mono text-xs mb-6 uppercase tracking-widest">Core Stack</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div class="reveal">
+                    <h3 class="text-secondary font-bold text-sm mb-6 uppercase tracking-widest border-l-4 border-primary pl-3">Tech Stack</h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="skill-pill border-primary/30 text-primary"><i class="fab fa-python mr-2"></i>Python 3</span>
-                        <span class="skill-pill border-green-500/30 text-green-400"><i class="fas fa-layer-group mr-2"></i>Django</span>
-                        <span class="skill-pill border-red-500/30 text-red-400"><i class="fas fa-server mr-2"></i>DRF (Rest API)</span>
-                        <span class="skill-pill border-blue-500/30 text-blue-400"><i class="fas fa-database mr-2"></i>PostgreSQL</span>
-                        <span class="skill-pill border-orange-500/30 text-orange-400"><i class="fas fa-database mr-2"></i>MySQL</span>
-                        <span class="skill-pill border-slate-500/30 text-slate-300"><i class="fas fa-code-branch mr-2"></i>Git/GitHub</span>
-                        <span class="skill-pill border-purple-500/30 text-purple-400"><i class="fas fa-brain mr-2"></i>DSA</span>
+                        <span class="skill-pill border-blue-200 text-blue-600 bg-blue-50"><i class="fab fa-python mr-2"></i>Python 3</span>
+                        <span class="skill-pill border-green-200 text-green-600 bg-green-50"><i class="fas fa-layer-group mr-2"></i>Django</span>
+                        <span class="skill-pill border-red-200 text-red-600 bg-red-50"><i class="fas fa-server mr-2"></i>DRF</span>
+                        <span class="skill-pill border-indigo-200 text-indigo-600 bg-indigo-50"><i class="fas fa-database mr-2"></i>PostgreSQL</span>
+                        <span class="skill-pill border-orange-200 text-orange-600 bg-orange-50"><i class="fas fa-database mr-2"></i>MySQL</span>
+                        <span class="skill-pill border-slate-200 text-slate-600 bg-slate-50"><i class="fas fa-code-branch mr-2"></i>Git/GitHub</span>
+                        <span class="skill-pill border-purple-200 text-purple-600 bg-purple-50"><i class="fas fa-brain mr-2"></i>DSA</span>
                     </div>
                 </div>
 
-                <!-- Soft Skills (The "Engineering Mindset") -->
-                <div>
-                    <h3 class="text-secondary font-mono text-xs mb-6 uppercase tracking-widest">Engineering Mindset</h3>
+                <div class="reveal">
+                    <h3 class="text-secondary font-bold text-sm mb-6 uppercase tracking-widest border-l-4 border-accent pl-3">Mindset</h3>
                     <div class="space-y-4">
-                        <div class="skill-row">
-                            <i class="fas fa-bolt text-yellow-400 w-6"></i>
+                        <div class="skill-row group">
+                            <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-500 group-hover:scale-110 transition"><i class="fas fa-bolt"></i></div>
                             <div>
-                                <h4 class="text-white text-sm font-bold">First-Principles Thinking</h4>
-                                <p class="text-xs text-secondary mt-1">Deconstructing complex problems to build optimized solutions from scratch.</p>
+                                <h4 class="text-text text-sm font-bold">First-Principles Thinking</h4>
+                                <p class="text-xs text-secondary mt-1">Deconstructing problems to basics.</p>
                             </div>
                         </div>
-                        <div class="skill-row">
-                            <i class="fas fa-check-double text-green-400 w-6"></i>
+                        <div class="skill-row group">
+                            <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-500 group-hover:scale-110 transition"><i class="fas fa-check-double"></i></div>
                             <div>
-                                <h4 class="text-white text-sm font-bold">End-to-End Ownership</h4>
-                                <p class="text-xs text-secondary mt-1">Taking full responsibility for features from database schema to API deployment.</p>
+                                <h4 class="text-text text-sm font-bold">End-to-End Ownership</h4>
+                                <p class="text-xs text-secondary mt-1">From schema design to deployment.</p>
                             </div>
                         </div>
-                        <div class="skill-row">
-                            <i class="fas fa-sync-alt text-blue-400 w-6"></i>
+                        <div class="skill-row group">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 group-hover:scale-110 transition"><i class="fas fa-sync-alt"></i></div>
                             <div>
-                                <h4 class="text-white text-sm font-bold">Rapid Tech Adaptation</h4>
-                                <p class="text-xs text-secondary mt-1">Mastering new libraries and frameworks quickly to meet project requirements.</p>
+                                <h4 class="text-text text-sm font-bold">Rapid Adaptation</h4>
+                                <p class="text-xs text-secondary mt-1">Learning new tools on the fly.</p>
                             </div>
                         </div>
                     </div>
@@ -210,119 +288,159 @@
         </div>
     </section>
 
-    <!-- Projects Section (Fetched from GitHub with Custom Overrides) -->
-    <section id="projects" class="py-20 bg-card border-t border-slate-800">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="flex justify-between items-end mb-10">
+    <section id="projects" class="py-24 px-6 relative z-10">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-between items-end mb-12 reveal">
                 <div>
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-project-diagram text-primary text-xl"></i>
-                        <h2 class="text-2xl font-bold text-white">Featured Projects</h2>
+                        <div class="p-3 bg-white rounded-lg text-primary shadow-sm border border-slate-100">
+                            <i class="fas fa-project-diagram text-xl"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-text">Featured Projects</h2>
                     </div>
-                    <p class="text-secondary text-sm mt-2">Source code fetched live from GitHub</p>
                 </div>
-                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-primary hover:text-white text-sm font-mono transition">View All &rarr;</a>
+                <a href="https://github.com/eswardasknair?tab=repositories" target="_blank" class="text-primary font-bold hover:underline decoration-2 underline-offset-4 text-sm transition">View All <i class="fas fa-arrow-right ml-1"></i></a>
             </div>
 
-            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Loading State -->
-                <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
-                <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
-                <div class="h-64 bg-slate-800/50 rounded-xl animate-pulse"></div>
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
+                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
+                <div class="h-72 bg-slate-200 rounded-2xl animate-pulse"></div>
             </div>
         </div>
     </section>
 
-    <!-- Certifications -->
-    <section id="certifications" class="py-20 px-6">
+    <section id="certifications" class="py-24 px-6 bg-white">
         <div class="max-w-4xl mx-auto">
-            <div class="flex items-center gap-3 mb-10 border-b border-slate-800 pb-4">
-                <i class="fas fa-certificate text-primary text-xl"></i>
-                <h2 class="text-2xl font-bold text-white">Certifications</h2>
+            <div class="flex items-center gap-3 mb-12 reveal">
+                <div class="p-3 bg-slate-50 rounded-lg text-primary shadow-sm border border-slate-100">
+                    <i class="fas fa-certificate text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-text">Certifications</h2>
             </div>
             
-            <div class="grid gap-4">
-                <!-- Cert 1 -->
-                <div class="cert-card">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fas fa-briefcase"></i></div>
-                        <div>
-                            <h3 class="font-bold text-white">Data Analytics Job Simulation</h3>
-                            <p class="text-sm text-secondary">Deloitte Australia (Forage)</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cert 2 -->
-                <div class="cert-card">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fab fa-python"></i></div>
-                        <div>
-                            <h3 class="font-bold text-white">Python Back End Development</h3>
-                            <p class="text-sm text-secondary">Besant Technologies • Django & DRF Specialization</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cert 3 -->
-                <div class="cert-card">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-slate-800 p-3 rounded-lg text-primary"><i class="fas fa-laptop-code"></i></div>
-                        <div>
-                            <h3 class="font-bold text-white">Python Web Developer</h3>
-                            <p class="text-sm text-secondary">L&T EduTech • Flask & MySQL</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="certs-grid" class="grid gap-4"></div>
         </div>
     </section>
 
-    <footer class="py-8 text-center border-t border-slate-800 bg-bg">
-        <p class="text-slate-500 text-sm font-mono">&copy; <span id="year"></span> Eswardas K Nair. Built for Performance.</p>
+    <footer class="py-10 text-center border-t border-slate-200 bg-slate-50">
+        <p class="text-secondary text-sm font-medium">&copy; <span id="year"></span> Eswardas K Nair. Crafted with <i class="fas fa-heart text-red-400 mx-1"></i> & Python.</p>
     </footer>
 
-    <!-- Tailwind Custom Utilities -->
     <style>
         .skill-pill {
-            @apply px-4 py-2 bg-slate-800/50 rounded-md border text-sm font-medium hover:bg-slate-800 transition cursor-default;
+            @apply px-4 py-2 rounded-full border text-sm font-semibold hover:-translate-y-1 transition-transform duration-300 cursor-default shadow-sm;
         }
         .skill-row {
-            @apply flex items-start gap-4 p-3 rounded-lg hover:bg-slate-800/30 transition;
-        }
-        .cert-card {
-            @apply bg-card border border-slate-800 p-5 rounded-xl hover:border-primary/50 transition duration-300;
+            @apply flex items-center gap-4 p-4 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 border border-transparent hover:border-slate-100;
         }
     </style>
 
-    <!-- JAVASCRIPT LOGIC -->
     <script>
+        // 1. DYNAMIC SMOKE & HEATMAP EFFECTS
+        const canvas = document.getElementById('effects-canvas');
+        const ctx = canvas.getContext('2d');
+        const glow = document.getElementById('cursor-glow');
+
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 1) * 2; // Move up
+                this.size = Math.random() * 5 + 1;
+                this.alpha = 0.5;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= 0.01;
+                this.size *= 0.96;
+            }
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = '#94A3B8'; // Smoke color (Slate)
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Mouse Tracking
+        window.addEventListener('mousemove', (e) => {
+            // Smoke
+            for(let i=0; i<3; i++) {
+                particles.push(new Particle(e.clientX, e.clientY));
+            }
+            // Heatmap Glow Movement
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+
+        function animateEffects() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateEffects);
+        }
+        animateEffects();
+
+        // 2. SCROLL REVEAL ANIMATION
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 3. DATA FETCHING (PROJECTS & PROFILE)
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // 1. Fetch Avatar
+        // Fetch Avatar
         fetch(`https://api.github.com/users/${username}`)
             .then(res => res.json())
-            .then(data => { if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; });
+            .then(data => { 
+                if(data.avatar_url) {
+                    document.getElementById('gh-avatar').src = data.avatar_url; 
+                }
+            })
+            .catch(err => console.log(err));
 
-        // 2. Custom "Resume Quality" Descriptions
-        // This map checks if a repo name matches. If yes, it uses this text instead of GitHub's.
         const customContent = {
             "ScholarSync": {
-                desc: "A centralized academic collaboration platform built with Django that enables students and researchers to synchronize daily academic activities and share documents.",
+                desc: "Academic collaboration platform enabling students to synchronize activities and share docs.",
                 tech: "Django • SQL"
             },
             "LMS": {
-                desc: "A high-performance backend system engineered using Django REST Framework (DRF) that streamlines library inventory through secure, optimized API endpoints.",
+                desc: "High-performance library backend utilizing DRF for secure, optimized inventory APIs.",
                 tech: "DRF • PostgreSQL"
             },
-            "Office-Employee-Management-System": { // Check exact repo name on GitHub
-                desc: "An organizational web application developed in Django to digitize employee records and departmental hierarchies with a responsive dashboard.",
+            "Office-Employee-Management-System": {
+                desc: "Digitized employee records system with hierarchy management and dashboard analytics.",
                 tech: "Django • Bootstrap"
             }
         };
 
-        // 3. Fetch and Render Projects
         async function fetchProjects() {
             const grid = document.getElementById('projects-grid');
             try {
@@ -338,33 +456,36 @@
                 }
 
                 myRepos.forEach(repo => {
-                    // Check if we have a custom description for this repo
                     const custom = customContent[repo.name] || {};
                     const description = custom.desc || repo.description || "Backend logic and data structures.";
                     const language = custom.tech || repo.language || "Python";
 
                     const card = document.createElement('div');
-                    card.className = 'bg-bg border border-slate-800 rounded-xl p-6 flex flex-col hover:-translate-y-1 transition duration-300 hover:border-primary/50 group h-full shadow-lg';
+                    card.className = 'reveal bg-white border border-slate-100 rounded-2xl p-6 flex flex-col hover:-translate-y-2 transition duration-300 hover:shadow-2xl hover:shadow-primary/5 group h-full relative overflow-hidden';
                     
                     card.innerHTML = `
+                        <div class="absolute top-0 left-0 w-1 h-full bg-primary transform scale-y-0 group-hover:scale-y-100 transition duration-300 origin-top"></div>
                         <div class="flex justify-between items-start mb-4">
-                            <i class="fas fa-folder text-primary/80 text-2xl group-hover:text-primary transition"></i>
+                            <div class="p-3 bg-slate-50 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition duration-300">
+                                <i class="fas fa-folder text-xl"></i>
+                            </div>
                             <div class="flex items-center gap-4">
-                                <span class="text-xs text-secondary font-mono flex items-center gap-1">
-                                    <i class="far fa-star"></i> ${repo.stargazers_count}
+                                <span class="text-xs text-secondary font-mono font-bold flex items-center gap-1">
+                                    <i class="fas fa-star text-yellow-400"></i> ${repo.stargazers_count}
                                 </span>
-                                <a href="${repo.html_url}" target="_blank" class="text-secondary hover:text-white"><i class="fas fa-external-link-alt"></i></a>
+                                <a href="${repo.html_url}" target="_blank" class="text-secondary hover:text-primary transition"><i class="fas fa-external-link-alt"></i></a>
                             </div>
                         </div>
-                        <h3 class="font-bold text-lg mb-3 text-white font-mono">${repo.name}</h3>
-                        <p class="text-secondary text-sm mb-6 flex-grow leading-relaxed">${description}</p>
+                        <h3 class="font-bold text-xl mb-3 text-text font-sans">${repo.name}</h3>
+                        <p class="text-secondary text-sm mb-6 flex-grow leading-relaxed font-medium">${description}</p>
                         
-                        <div class="mt-auto pt-4 border-t border-slate-800/50 flex items-center gap-2 text-xs text-primary font-mono">
+                        <div class="mt-auto pt-4 border-t border-slate-50 flex items-center gap-2 text-xs text-primary font-bold font-mono uppercase tracking-wider">
                             <span class="w-2 h-2 rounded-full bg-primary"></span>
                             ${language}
                         </div>
                     `;
                     grid.appendChild(card);
+                    observer.observe(card); // Add animation to dynamic elements
                 });
 
             } catch (error) {
@@ -373,7 +494,52 @@
             }
         }
 
+        // 4. Render Certifications
+        const certifications = [
+            {
+                title: "Software Engineer Intern",
+                issuer: "HackerRank Certified",
+                icon: "fab fa-hackerrank",
+                color: "text-green-600 bg-green-50"
+            },
+            {
+                title: "Data Analytics Job Simulation",
+                issuer: "Deloitte Australia (Forage)",
+                icon: "fas fa-briefcase",
+                color: "text-blue-600 bg-blue-50"
+            },
+            {
+                title: "Python Back End Development",
+                issuer: "Besant Technologies",
+                icon: "fab fa-python",
+                color: "text-yellow-600 bg-yellow-50"
+            },
+            {
+                title: "Python Web Developer",
+                issuer: "L&T EduTech",
+                icon: "fas fa-laptop-code",
+                color: "text-purple-600 bg-purple-50"
+            }
+        ];
+
+        function renderCerts() {
+            const container = document.getElementById('certs-grid');
+            container.innerHTML = certifications.map(cert => `
+                <div class="reveal bg-white border border-slate-100 p-5 rounded-xl hover:shadow-lg transition duration-300 flex items-center gap-5 hover:border-primary/30 group">
+                    <div class="${cert.color} p-4 rounded-xl text-xl shadow-sm group-hover:scale-110 transition">
+                        <i class="${cert.icon}"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-text text-lg">${cert.title}</h3>
+                        <p class="text-sm text-secondary font-medium">${cert.issuer}</p>
+                    </div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
         fetchProjects();
+        renderCerts();
     </script>
 </body>
 </html>
