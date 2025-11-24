@@ -62,74 +62,7 @@
             to { background-position: 200% center; }
         }
 
-        /* Floating Background Objects */
-        .floating-shape {
-            position: fixed;
-            border-radius: 50%;
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .shape-1 {
-            width: 300px;
-            height: 300px;
-            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
-            top: 10%;
-            left: -100px;
-            animation: float1 20s ease-in-out infinite;
-        }
-
-        .shape-2 {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #EC4899, #F59E0B);
-            top: 60%;
-            right: -50px;
-            animation: float2 15s ease-in-out infinite;
-        }
-
-        .shape-3 {
-            width: 150px;
-            height: 150px;
-            background: linear-gradient(135deg, #10B981, #3B82F6);
-            bottom: 10%;
-            left: 30%;
-            animation: float3 18s ease-in-out infinite;
-        }
-
-        @keyframes float1 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(100px, -100px) rotate(120deg); }
-            66% { transform: translate(-50px, 50px) rotate(240deg); }
-        }
-
-        @keyframes float2 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-150px, 100px) rotate(180deg); }
-        }
-
-        @keyframes float3 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(100px, -50px) scale(1.2); }
-        }
-
-        /* Particle Animation */
-        .particle {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        @keyframes particleFloat {
-            to {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Heat Trail Effect Canvas */
+        /* Heat Trail Canvas */
         #heatCanvas {
             position: fixed;
             top: 0;
@@ -140,23 +73,66 @@
             z-index: 9999;
         }
 
-        /* Smoke Particles */
-        .smoke-particle {
+        /* Realistic Smoke */
+        .smoke {
             position: fixed;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(100, 116, 139, 0.4), transparent);
             pointer-events: none;
             z-index: 9998;
-            animation: smokeRise 2s ease-out forwards;
+            filter: blur(8px);
+            opacity: 0;
         }
 
-        @keyframes smokeRise {
-            to {
-                transform: translateY(-100px) scale(2);
-                opacity: 0;
-            }
+        /* Moving Geometric Objects (like igloo.inc) */
+        .floating-object {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.4;
+        }
+
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            border-bottom: 86px solid;
+        }
+
+        .square {
+            width: 80px;
+            height: 80px;
+            transform: rotate(45deg);
+        }
+
+        .circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+        }
+
+        .hexagon {
+            width: 70px;
+            height: 40px;
+            position: relative;
+        }
+
+        .hexagon:before,
+        .hexagon:after {
+            content: "";
+            position: absolute;
+            width: 0;
+            border-left: 35px solid transparent;
+            border-right: 35px solid transparent;
+        }
+
+        .hexagon:before {
+            bottom: 100%;
+            border-bottom: 20px solid;
+        }
+
+        .hexagon:after {
+            top: 100%;
+            border-top: 20px solid;
         }
 
         /* Glowing Cards */
@@ -271,11 +247,6 @@
 
     <!-- Heat Trail Canvas -->
     <canvas id="heatCanvas"></canvas>
-
-    <!-- Floating Background Shapes -->
-    <div class="floating-shape shape-1"></div>
-    <div class="floating-shape shape-2"></div>
-    <div class="floating-shape shape-3"></div>
 
     <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-white/70 backdrop-blur-md border-b border-blue-100 shadow-sm">
@@ -577,14 +548,14 @@
         document.getElementById('year').textContent = new Date().getFullYear();
         const username = 'eswardasknair';
 
-        // 1. Fetch Avatar
+        // Fetch Avatar
         fetch(`https://api.github.com/users/${username}`)
             .then(res => res.json())
             .then(data => { 
                 if(data.avatar_url) document.getElementById('gh-avatar').src = data.avatar_url; 
             });
 
-        // 2. Custom Project Descriptions
+        // Custom Project Descriptions
         const customContent = {
             "ScholarSync": {
                 desc: "A centralized academic collaboration platform built with Django that enables students and researchers to synchronize daily academic activities and share documents.",
@@ -600,7 +571,7 @@
             }
         };
 
-        // 3. Fetch and Render Projects
+        // Fetch and Render Projects
         async function fetchProjects() {
             const grid = document.getElementById('projects-grid');
             try {
@@ -661,7 +632,7 @@
 
         fetchProjects();
 
-        // ====== HEAT TRAIL & SMOKE EFFECT ======
+        // ====== REALISTIC HEAT MAP EFFECT ======
         const canvas = document.getElementById('heatCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -672,122 +643,257 @@
             canvas.height = window.innerHeight;
         });
 
-        let heatPoints = [];
-
-        class HeatPoint {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.life = 100; // Full intensity
-                this.maxLife = 100;
-                this.radius = 40;
-            }
-
-            update() {
-                this.life -= 0.8; // Slower fade
-            }
-
-            draw() {
-                if (this.life <= 0) return;
-
-                const intensity = this.life / this.maxLife;
-                
-                // Heat color gradient: red -> orange -> yellow -> transparent
-                let color;
-                if (intensity > 0.66) {
-                    // Red phase
-                    color = `rgba(220, 38, 38, ${intensity * 0.6})`;
-                } else if (intensity > 0.33) {
-                    // Orange phase
-                    color = `rgba(249, 115, 22, ${intensity * 0.5})`;
-                } else {
-                    // Yellow phase
-                    color = `rgba(251, 191, 36, ${intensity * 0.4})`;
-                }
-
-                const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-                gradient.addColorStop(0, color);
-                gradient.addColorStop(1, 'transparent');
-
-                ctx.fillStyle = gradient;
-                ctx.fillRect(this.x - this.radius, this.y - this.radius, this.radius * 2, this.radius * 2);
-            }
-
-            isDead() {
-                return this.life <= 0;
+        // Thermal color gradient (like thermal imaging camera)
+        function getHeatColor(intensity) {
+            // intensity: 0 (cold) to 1 (very hot)
+            if (intensity < 0.2) {
+                // Dark blue to blue
+                const t = intensity / 0.2;
+                return `rgba(${Math.floor(0 + 30*t)}, ${Math.floor(0 + 50*t)}, ${Math.floor(100 + 155*t)}, ${0.4 + t*0.3})`;
+            } else if (intensity < 0.4) {
+                // Blue to cyan
+                const t = (intensity - 0.2) / 0.2;
+                return `rgba(${Math.floor(30 + 0*t)}, ${Math.floor(50 + 205*t)}, ${Math.floor(255 + 0*t)}, ${0.5 + t*0.2})`;
+            } else if (intensity < 0.6) {
+                // Cyan to green
+                const t = (intensity - 0.4) / 0.2;
+                return `rgba(${Math.floor(30*t)}, ${Math.floor(255 - 55*t)}, ${Math.floor(255 - 255*t)}, ${0.6 + t*0.2})`;
+            } else if (intensity < 0.75) {
+                // Green to yellow
+                const t = (intensity - 0.6) / 0.15;
+                return `rgba(${Math.floor(30 + 225*t)}, ${Math.floor(200 + 55*t)}, 0, ${0.7 + t*0.15})`;
+            } else if (intensity < 0.9) {
+                // Yellow to orange/red
+                const t = (intensity - 0.75) / 0.15;
+                return `rgba(255, ${Math.floor(255 - 100*t)}, 0, ${0.8 + t*0.1})`;
+            } else {
+                // Red to white (extreme heat)
+                const t = (intensity - 0.9) / 0.1;
+                return `rgba(255, ${Math.floor(155 + 100*t)}, ${Math.floor(0 + 255*t)}, ${0.9 + t*0.1})`;
             }
         }
 
-        let mouseX = 0, mouseY = 0;
+        // Heat grid for pixel-based rendering
+        const gridSize = 8; // Pixel size for heat map
+        const cols = Math.ceil(canvas.width / gridSize);
+        const rows = Math.ceil(canvas.height / gridSize);
+        let heatMap = Array(rows).fill(0).map(() => Array(cols).fill(0));
+
+        let mouseX = -100, mouseY = -100;
+        let mouseStillTime = 0;
+        let lastMouseX = -100, lastMouseY = -100;
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
-            // Add heat point
-            heatPoints.push(new HeatPoint(mouseX, mouseY));
 
-            // Create smoke particle
-            createSmokeParticle(mouseX, mouseY);
+            // Check if mouse is moving or stationary
+            if (Math.abs(mouseX - lastMouseX) < 2 && Math.abs(mouseY - lastMouseY) < 2) {
+                mouseStillTime++;
+            } else {
+                mouseStillTime = 0;
+            }
+
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            // Create smoke when moving
+            if (Math.random() > 0.7) {
+                createRealisticSmoke(mouseX, mouseY);
+            }
         });
 
-        function createSmokeParticle(x, y) {
-            const smoke = document.createElement('div');
-            smoke.className = 'smoke-particle';
-            smoke.style.left = x + 'px';
-            smoke.style.top = y + 'px';
-            smoke.style.animationDelay = Math.random() * 0.5 + 's';
-            document.body.appendChild(smoke);
+        function createRealisticSmoke(x, y) {
+            const smokeCount = 3;
+            for (let i = 0; i < smokeCount; i++) {
+                const smoke = document.createElement('div');
+                smoke.className = 'smoke';
+                
+                const size = 20 + Math.random() * 30;
+                smoke.style.width = size + 'px';
+                smoke.style.height = size + 'px';
+                smoke.style.left = (x - size/2 + (Math.random() - 0.5) * 20) + 'px';
+                smoke.style.top = (y - size/2 + (Math.random() - 0.5) * 20) + 'px';
+                smoke.style.borderRadius = '50%';
+                
+                const gray = 150 + Math.floor(Math.random() * 50);
+                smoke.style.background = `radial-gradient(circle, rgba(${gray}, ${gray}, ${gray}, 0.3), transparent)`;
+                
+                document.body.appendChild(smoke);
 
-            setTimeout(() => smoke.remove(), 2000);
+                // Animate smoke
+                const duration = 1500 + Math.random() * 1000;
+                const tx = (Math.random() - 0.5) * 100;
+                const ty = -100 - Math.random() * 100;
+                
+                smoke.animate([
+                    { transform: 'translate(0, 0) scale(1)', opacity: 0.4 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(2.5)`, opacity: 0 }
+                ], {
+                    duration: duration,
+                    easing: 'ease-out'
+                });
+
+                setTimeout(() => smoke.remove(), duration);
+            }
+        }
+
+        function updateHeatMap() {
+            // Cool down all cells gradually
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    heatMap[row][col] *= 0.96; // Slow cooling
+                    if (heatMap[row][col] < 0.01) heatMap[row][col] = 0;
+                }
+            }
+
+            // Add heat at mouse position
+            if (mouseX >= 0 && mouseY >= 0) {
+                const col = Math.floor(mouseX / gridSize);
+                const row = Math.floor(mouseY / gridSize);
+
+                const heatRadius = 5;
+                const heatIncrease = 0.03 + (mouseStillTime * 0.002); // More heat when stationary
+
+                for (let dr = -heatRadius; dr <= heatRadius; dr++) {
+                    for (let dc = -heatRadius; dc <= heatRadius; dc++) {
+                        const r = row + dr;
+                        const c = col + dc;
+                        if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                            const distance = Math.sqrt(dr * dr + dc * dc);
+                            if (distance <= heatRadius) {
+                                const falloff = 1 - (distance / heatRadius);
+                                heatMap[r][c] = Math.min(1, heatMap[r][c] + heatIncrease * falloff);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function renderHeatMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const heat = heatMap[row][col];
+                    if (heat > 0.02) {
+                        ctx.fillStyle = getHeatColor(heat);
+                        ctx.fillRect(col * gridSize, row * gridSize, gridSize, gridSize);
+                    }
+                }
+            }
         }
 
         function animateHeat() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            heatPoints = heatPoints.filter(point => !point.isDead());
-
-            heatPoints.forEach(point => {
-                point.update();
-                point.draw();
-            });
-
+            updateHeatMap();
+            renderHeatMap();
             requestAnimationFrame(animateHeat);
         }
 
         animateHeat();
 
-        // ====== FLOATING PARTICLES ======
-        function createParticle() {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
+        // ====== FLOATING GEOMETRIC OBJECTS (like igloo.inc) ======
+        const shapes = ['triangle', 'square', 'circle', 'hexagon'];
+        const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
+
+        function createFloatingObject() {
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
             
-            const size = Math.random() * 6 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
+            const obj = document.createElement('div');
+            obj.className = `floating-object ${shape}`;
             
-            const colors = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981'];
-            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.opacity = Math.random() * 0.3 + 0.2;
-            
-            particle.style.left = Math.random() * window.innerWidth + 'px';
-            particle.style.top = window.innerHeight + 'px';
-            
-            const duration = Math.random() * 10 + 10;
-            particle.style.animation = `particleFloat ${duration}s linear forwards`;
-            
-            document.body.appendChild(particle);
-            
-            setTimeout(() => particle.remove(), duration * 1000);
+            if (shape === 'triangle') {
+                obj.style.borderBottomColor = color;
+            } else if (shape === 'hexagon') {
+                obj.style.background = color;
+                const before = window.getComputedStyle(obj, ':before');
+                const after = window.getComputedStyle(obj, ':after');
+                obj.style.setProperty('--hex-color', color);
+            } else {
+                obj.style.background = color;
+            }
+
+            // Random starting position (from edges)
+            const startSide = Math.floor(Math.random() * 4); // 0: top, 1: right, 2: bottom, 3: left
+            let startX, startY, endX, endY;
+
+            switch(startSide) {
+                case 0: // top
+                    startX = Math.random() * window.innerWidth;
+                    startY = -100;
+                    endX = Math.random() * window.innerWidth;
+                    endY = window.innerHeight + 100;
+                    break;
+                case 1: // right
+                    startX = window.innerWidth + 100;
+                    startY = Math.random() * window.innerHeight;
+                    endX = -100;
+                    endY = Math.random() * window.innerHeight;
+                    break;
+                case 2: // bottom
+                    startX = Math.random() * window.innerWidth;
+                    startY = window.innerHeight + 100;
+                    endX = Math.random() * window.innerWidth;
+                    endY = -100;
+                    break;
+                case 3: // left
+                    startX = -100;
+                    startY = Math.random() * window.innerHeight;
+                    endX = window.innerWidth + 100;
+                    endY = Math.random() * window.innerHeight;
+                    break;
+            }
+
+            obj.style.left = startX + 'px';
+            obj.style.top = startY + 'px';
+
+            document.body.appendChild(obj);
+
+            const duration = 15000 + Math.random() * 15000;
+            const rotation = Math.random() * 720 - 360;
+
+            obj.animate([
+                { 
+                    transform: 'translate(0, 0) rotate(0deg)',
+                    opacity: 0 
+                },
+                { 
+                    opacity: 0.4,
+                    offset: 0.1 
+                },
+                { 
+                    opacity: 0.4,
+                    offset: 0.9 
+                },
+                { 
+                    transform: `translate(${endX - startX}px, ${endY - startY}px) rotate(${rotation}deg)`,
+                    opacity: 0 
+                }
+            ], {
+                duration: duration,
+                easing: 'linear'
+            });
+
+            setTimeout(() => obj.remove(), duration);
         }
 
-        // Create particles periodically
-        setInterval(createParticle, 300);
+        // Create objects periodically
+        setInterval(createFloatingObject, 2000);
 
         // Initial burst
-        for(let i = 0; i < 20; i++) {
-            setTimeout(createParticle, i * 100);
+        for (let i = 0; i < 8; i++) {
+            setTimeout(createFloatingObject, i * 500);
         }
+
+        // Add hex color variable support for hexagon
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .hexagon:before { border-bottom-color: inherit; }
+            .hexagon:after { border-top-color: inherit; }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
